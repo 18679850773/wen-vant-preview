@@ -13,8 +13,11 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
+$MiddleSize: 30px;
+
 .hello {
   color: #42b983;
+  font-size: $MiddleSize;
 }
 </style>

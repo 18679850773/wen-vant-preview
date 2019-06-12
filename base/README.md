@@ -43,22 +43,17 @@ git commit
 1. 安装依赖：
 
 ```
-npm install
+npm init   // 安装 根目录及example目录下所需的依赖
 ```
 
 2. 执行命令：
 
 ```
-npm start
+npm start  // start watch & serve example
 ```
 
-> ps: 执行`npm run dev`不会监听src目录下文件的变化，只会拷贝到example/components/[PROJECT_NAME]/目录下。而执行`npm start`则会监听并在发生变动时并进行拷贝。
-
-3. example 目录是一个Vue项目目录，查看自定义组件被使用的效果并可进行多个demo实例演示。步骤如下：
-- 执行 `cd example` 并执行 `npm i`
-- 执行 `npm run serve` 即可打开自动打开浏览器查看效果
-
-
+> ps: 执行`npm run dev`不会监听src目录下文件的变化，只会拷贝到example/components/[PROJECT_NAME]/目录下。而执行`npm start`则会监听并在发生变动时并进行拷贝&打开浏览器预览。
+example 目录是一个Vue项目目录，查看自定义组件被使用的效果并可进行多个demo实例演示。
 
 
 ## 目录结构

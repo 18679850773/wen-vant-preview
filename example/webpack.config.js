@@ -13,10 +13,7 @@ module.exports = {
     },
     resolve: {
         extensions: ['.js', '.vue'],
-        modules: ['./components', 'node_modules']
-        // alias: {
-        //   '@': path.join(__dirname, 'src')
-        // }
+        modules: ['./components', 'node_modules']        
       },
 
     module: {        
@@ -26,8 +23,8 @@ module.exports = {
                 use: ['vue-loader']
             },
             {
-                test: /\.css$/,
-                use: ['vue-style-loader', 'css-loader']
+                test: /\.(scss|css)$/,             
+                loader: ['vue-style-loader', 'css-loader', 'sass-loader']
             }
         ]
     },

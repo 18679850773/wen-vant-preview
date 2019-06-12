@@ -44,6 +44,7 @@ module.exports = {
         }
     },
     devServer: {
-        open: true
+        open: true,
+        port: 9001
     }
 }

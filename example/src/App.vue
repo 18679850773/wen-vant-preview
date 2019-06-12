@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <HelloWorld msg="bs-vue-seed"/>
+     <HelloWorld1 msg="aaa"/>
   </div>
 </template>
 
@@ -9,7 +10,6 @@
 export default {
   name: 'app',
   components: {
-    // HelloWorld
   }
 }
 </script>

@@ -1,8 +1,10 @@
-import HelloWord from './helloWorld.vue';
+import HelloWorld from './helloWorld.vue';
+import HelloWorld1 from './helloWorld.1.vue';
 
-/* istanbul ignore next */
-HelloWord.install = function(Vue) {
-  Vue.component(HelloWord.name, HelloWord);
-};
-
-export default HelloWord;
+const seed = {
+  install: function(Vue){
+    Vue.component(HelloWorld.name, HelloWorld);
+    Vue.component(HelloWorld1.name, HelloWorld1);
+  } 
+}
+export default seed

@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <HelloWorld msg="aaa"/>
+    <HelloWorld msg="bs-vue-seed"/>
   </div>
 </template>
 

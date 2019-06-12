@@ -1,15 +1,14 @@
 {
   "name": "bs-vue-seed",
   "version": "1.0.0",
-  "description": "bs-vue 组件种子项目",
+  "description": "",
   "seedVersion": "0.1.0",
-  "private": true,
   "scripts": {
     "init": "npm i & cd example && npm i",
     "start": "webpack --config build/webpack.config.dev.js --watch",
     "dev": "webpack --config build/webpack.config.dev.js",
     "release": "npm run dist & npm publish",
-    "dist": "webpack --config build/webpack.config.prod.js"
+    "dist": "webpack --config build/webpack.config.prod.js"   
   },
   "author": "BS",
   "license": "ISC",

@@ -11,7 +11,7 @@ const GenerateJsonPlugin = require('./plugin/generate-json-webpack-plugin');
 
 module.exports = {
   mode: 'development',
-  entry: './src/runtime.js',
+  entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, '../example/components', PackageJson.name)
   },
@@ -27,7 +27,7 @@ module.exports = {
     }),
     new CopyPlugin([
       //{from: './src/', to: './'}
-     {from: './src/', to: './', ignore: ['main.js', 'runtime.js']}
+     {from: './src/', to: './', ignore: ['*main.js']}
     ]),
     // new GenerateJsonPlugin('../../../example/app.json', appJsonTemplate, null, 2)
   ],

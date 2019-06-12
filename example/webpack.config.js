@@ -5,14 +5,21 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = {
     mode: 'development',
     entry:{
-        app:'./main.js' // 入口文件的位置
+        app:'./src/main.js' // 入口文件的位置
     },
     output:{
         filename: '[name].bundle.js', // 输出文件名字的格式
         path: pathJoin(__dirname,'./dist') // 输出的绝对路径
     },
+    resolve: {
+        extensions: ['.js', '.vue'],
+        modules: ['./components', 'node_modules']
+        // alias: {
+        //   '@': path.join(__dirname, 'src')
+        // }
+      },
 
-    module: {
+    module: {        
         rules: [
             {
                 test: /\.vue$/,

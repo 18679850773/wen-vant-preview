@@ -4,8 +4,8 @@
   "description": "",
   "seedVersion": "0.1.0",
   "scripts": {
-    "init": "npm i & cd example && npm i",    
-    "start": "start npm run watch && start npm run example",
+    "i-all": "npm i & cd example && npm i",    
+    "start": "start npm run watch & start npm run example",
     "dev": "webpack --config build/webpack.config.dev.js",
     "watch": "webpack --config build/webpack.config.dev.js --watch",
     "example": "cd example && npm run serve",   

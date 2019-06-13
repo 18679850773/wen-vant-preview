@@ -43,7 +43,7 @@ git commit
 1. 安装依赖：
 
 ```
-npm init   // 安装 根目录及example目录下所需的依赖
+npm run i-all   // 安装 根目录及example目录下所需的依赖
 ```
 
 2. 执行命令：

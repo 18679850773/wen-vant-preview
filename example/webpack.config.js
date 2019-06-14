@@ -1,7 +1,6 @@
 const {join:pathJoin} = require('path');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-// const 
 
 function resolve(dir) {
     return pathJoin(__dirname, '..', dir)
@@ -21,8 +20,7 @@ module.exports = {
         modules: ['./components', 'node_modules'],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
-            '@src': pathJoin(__dirname, './src'),
-            '@component': pathJoin( __dirname, './components'),
+            '@': pathJoin(__dirname, './src')
           }
       },
 
@@ -42,6 +40,10 @@ module.exports = {
             {
                 test: /\.(scss|css)$/,             
                 loader: ['vue-style-loader', 'css-loader', 'sass-loader']
+            },
+            {
+                test: /\.less$/,             
+                loader: ['vue-style-loader', 'css-loader', 'less-loader']
             },
             {
               test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

@@ -19,6 +19,7 @@ Enhance：代码重构或优化或格式化等
 - [+] 增加了example对vue-router的支持
 - [+] 增加了example对babel的支持
 - [+] 增加了example对图片&字体的支持
+- [+] 增加了example对less的支持
 
 ### Fix
 

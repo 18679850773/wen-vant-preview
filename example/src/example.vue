@@ -1,22 +1,21 @@
 <template>  
-  <div class="wrapper">
-      <div id="app">
-    <router-view/>
-  </div>
+<div class="example">
+    <HelloWorld msg="bs-vue-seed"/>
+     <HelloWorld1 msg="aaa"/>
   </div>
 </template>
 
 <script>
 
 export default {
-  name: 'app',
+  name: 'example',
   components: {
   }
 }
 </script>
 
 <style>
-#app {
+.example {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

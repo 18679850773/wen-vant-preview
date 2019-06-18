@@ -11,6 +11,21 @@ Enhance：代码重构或优化或格式化等
 ```
 ---
 
+## v0.1.1 &emsp;[ 2019-06-14 ]
+
+### Feature
+
+- [+] 增加了example对Element-ui的支持
+- [+] 增加了example对vue-router的支持
+- [+] 增加了example对babel的支持
+- [+] 增加了example对图片&字体的支持
+- [+] 增加了example对less的支持
+
+### Fix
+
+- [#] 修复版本号及部分名字错误
+
+
 ## v0.1.0 &emsp;[ 2019-06-12 ]
 
 ### Add

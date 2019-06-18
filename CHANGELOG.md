@@ -1,4 +1,4 @@
-# bs-ui-seed
+# bs-vue-seed
 ```
 [+]新增 [-]删除 [^]升级 [#]修复 [*]重构优化
 rc：未对外发布版本
@@ -22,7 +22,7 @@ Enhance：代码重构或优化或格式化等
 - [+] 增加了xxx模块
 
 ### Fix
-- [#] [ID1003144](https://www.baidu.com) 修复了xxxxx的问题
+- [#] [ID1003144](https://www.xxxx.com) 修复了xxxxx的问题
 
 ### Upgrade
 - [\^] 更新bs-ui-xxxx至vxxxxxx

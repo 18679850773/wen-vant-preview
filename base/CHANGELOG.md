@@ -11,6 +11,12 @@ Enhance：代码重构或优化或格式化等
 ```
 ---
 
+## v0.1.2 &emsp;[  ]
+
+### Enhance
+- [*] 优化调整example
+
+
 ## v0.1.1 &emsp;[ 2019-06-14 ]
 
 ### Feature

@@ -1,8 +1,8 @@
 {
   "name": "bs-vue-seed",
-  "version": "0.1.3",
+  "version": "0.1.1",
   "description": "",
-  "seedVersion": "0.1.1",
+  "seedVersion": "0.1.3",
   "scripts": {
     "i-all": "npm i & cd example && npm i",    
     "start": "start npm run watch & start npm run example",

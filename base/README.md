@@ -11,22 +11,22 @@ vue自定义组件开发模板：
 1. clone seed项目
 
 ```
-git clone -o boilerplate http://git.intra.beyonds.com/phoenix/bs-vue-seed.git bs\-vue\-xxx (使用命令行时：项目名如果包含'-'则需要转义'\-'，其中xxx表示组件的名称)
+git clone -o boilerplate http://gitlab.wanda.cn/beyonds/phoenix/frontend/bs-vue-seed.git bs\-vue\-xxx (使用命令行时：项目名如果包含'-'则需要转义'\-'，其中xxx表示组件的名称)
 cd bs-vue-xxx
 git remote rm boilerplate
-git remote add origin http://git.intra.beyonds.com/phoenix/bs-vue-xxx.git
+git remote add origin http://gitlab.wanda.cn/beyonds/phoenix/frontend/bs-vue-xxx.git
 git push origin master
 ```
 
 2. 修改 `package.json` 里的 `name` 和`version`为自己的组件名称和version
 
 
-* 从 (http://git.intra.beyonds.com/phoenix/bs-vue-seed) clone下来进行初始化. 注意：bs-vue-seed的remote名称 `origin` 已更名为 `boilerplate`
+* 从 (http://gitlab.wanda.cn/beyonds/phoenix/frontend/bs-vue-seed) clone下来进行初始化. 注意：bs-vue-seed的remote名称 `origin` 已更名为 `boilerplate`
 
 ### 更新： 从boilerplate更新项目
 
 ```sh
-git remote add boilerplate http://git.intra.beyonds.com/phoenix/bs-vue-seed.git
+git remote add boilerplate http://gitlab.wanda.cn/beyonds/phoenix/frontend/bs-vue-seed.git
 git fetch boilerplate --no-tags
 git merge --squash --no-commit boilerplate/master
 # Remove boilerplate remote to avoid interacting with it on the repo graph

@@ -2,15 +2,15 @@
   "name": "bs-vue-seed",
   "version": "0.1.0",
   "description": "",
-  "seedVersion": "0.1.4",
+  "seedVersion": "0.1.5",
   "scripts": {
-    "i-all": "npm i & cd example && npm i",    
+    "i-all": "npm i & cd example && npm i",
     "start": "start npm run watch & start npm run example",
     "dev": "webpack --config build/webpack.config.dev.js",
     "watch": "webpack --config build/webpack.config.dev.js --watch",
-    "example": "cd example && npm run serve",   
+    "example": "cd example && npm run serve",
     "dist": "webpack --config build/webpack.config.prod.js",
-    "release": "npm run dist & npm publish"    
+    "release": "npm run dist & npm publish"
   },
   "author": "BS",
   "license": "ISC",

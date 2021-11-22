@@ -10,6 +10,11 @@ Enhance：代码重构或优化或格式化等
 --：表示暂时没有
 ```
 ---
+## v0.1.5 &emsp;[ 2021-11-22 ]
+### Enhance
+- [*] 升级bs-vue-base to 1.1.4
+- [*] [BreakChange] need bs-vue-base 1.1.3
+
 
 ## v0.1.4 &emsp;[ 2021-05-20 ]
 ### Enhance

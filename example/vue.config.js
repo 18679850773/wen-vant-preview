@@ -68,7 +68,7 @@ module.exports = {
             changeOrigin: true,
         },
         '/cdn': {
-            target: 'http://phoenix.intra.sit.beyonds.gw',
+            target: 'https://spres.beyonds.com',
             changeOrigin: true,
         }       
     }

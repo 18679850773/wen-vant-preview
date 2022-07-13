@@ -1,24 +1,36 @@
 {
-  "name": "bs-vue-seed",
-  "version": "0.1.0",
-  "description": "",
-  "seedVersion": "0.1.5",
-  "scripts": {
-    "i-all": "npm i & cd example && npm i",
-    "start": "start npm run watch & start npm run example",
-    "dev": "webpack --config build/webpack.config.dev.js",
-    "watch": "webpack --config build/webpack.config.dev.js --watch",
-    "example": "cd example && npm run serve",
-    "dist": "webpack --config build/webpack.config.prod.js",
-    "release": "npm run dist & npm publish"
-  },
-  "author": "BS",
-  "license": "ISC",
-  "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "copy-webpack-plugin": "^5.0.3",
-    "webpack": "^4.33.0",
-    "webpack-cli": "^3.3.3"
-  },
-  "main": "./dist/"
+    "name": "wen-vant-preview",
+    "version": "0.1.0",
+    "description": "",
+    "seedVersion": "0.1.5",
+    "scripts": {
+        "i-all": "npm i & cd example && npm i",
+        "start": "start npm run watch & start npm run example",
+        "dev": "webpack --config build/webpack.config.dev.js",
+        "watch": "webpack --config build/webpack.config.dev.js --watch",
+        "example": "cd example && npm run serve",
+        "dist": "webpack --config build/webpack.config.prod.js",
+        "release": "npm run dist & npm publish"
+    },
+    "author": "cxw18679850773",
+    "license": "MIT",
+    "devDependencies": {
+        "babel-plugin-import": "^1.13.5",
+        "clean-webpack-plugin": "^3.0.0",
+        "copy-webpack-plugin": "^5.0.3",
+        "webpack": "^4.33.0",
+        "webpack-cli": "^3.3.12"
+    },
+    "main": "./dist/",
+    "dependencies": {
+        "vant": "^2.12.48",
+        "vue-mini-player": "^0.2.1"
+    },
+    "files": [
+        "dist"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/18679850773/wen-vant-preview.git"
+    }
 }

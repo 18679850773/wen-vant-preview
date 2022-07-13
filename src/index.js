@@ -1,10 +1,6 @@
-import HelloWorld from './helloWorld.vue';
-import HelloWorld1 from './helloWorld.1.vue';
+import 'vue-mini-player'
+import 'vue-mini-player/lib/vue-mini-player.css'
 
-const seed = {
-  install: function(Vue){
-    Vue.component(HelloWorld.name, HelloWorld);
-    Vue.component(HelloWorld1.name, HelloWorld1);
-  } 
-}
-export default seed
+import WenVantPreview from './wen-vant-preview.vue';
+
+export default WenVantPreview

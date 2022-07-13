@@ -1,4 +1,4 @@
-# bs-vue-seed
+# wen-vant-preview
 ```
 [+]新增 [-]删除 [^]升级 [#]修复 [*]重构优化
 rc：未对外发布版本
@@ -25,7 +25,7 @@ Enhance：代码重构或优化或格式化等
 - [#] [ID1003144](https://www.xxxx.com) 修复了xxxxx的问题
 
 ### Upgrade
-- [\^] 更新bs-ui-xxxx至vxxxxxx
+- [\^] 更新vxxxx至vxxxxxx
 
 ### Enhance
 - [*] 重构了xxxx模块或页面的功能

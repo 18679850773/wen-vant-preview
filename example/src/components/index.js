@@ -1,8 +1,6 @@
-import RegisterELComponent from './element.js'
-import RegisterWDComponent from './widgets.js'
-export default class RegisterBSComponents {
+import RegisterVantComponent from './vant'
+export default class RegisterComponent {
     static register() {
-        RegisterELComponent.register();
-        RegisterWDComponent.register();
+        RegisterVantComponent.register();
     }
 }

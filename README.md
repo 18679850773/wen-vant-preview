@@ -21,7 +21,7 @@ npm i wen-vant-preview -S
 ## 使用方法
 
 ``` xml
-    <wen-vant-preview v-model="showPreview" :list="previewList" ref="wen-vant-preview">
+    <wen-vant-preview v-model="showPreview" :list="previewList" ref="wen-vant-preview" :config="previewConfig">
       <template v-slot="{item, index}">
         <span :style="{color: `${item.color}`, 'display': 'flex','height': '100%','align-items': 'center','justify-content': 'center'}">
           {{ item.name }}----{{ index + 1 }}
@@ -59,19 +59,24 @@ export default {
         {
           id: 3,
           url: 'http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4',
-          type: 'video'
+          fileType: 2 
         },
         {
           id: 4,
           src: 'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp8.itc.cn%2Fimages01%2F20211109%2F68827788036149d78b9abb076c67917b.jpeg&refer=http%3A%2F%2Fp8.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1660189303&t=e864839984d3cc831e9cc10e0ac8be78',
-          type: 'image'
+          fileType: 1
         },
         {
           id: 5,
           url: 'http://v.xiaohongshu.com/pre_post/01e2c976f53d85c80183700381e2fb09d5_259.mp4?sign=d002efb961ae9e2bb0484d459f6d088d&t=62d03d80',
-          type: 'video'
+          fileType: 2
         }
-      ]
+      ],
+      previewConfig: {
+        type: 'fileType', // 用于区分视频还是图片的字段
+        videoType: 2,     // 视频类型的判断值
+        imageType: 1      // 图片类型的判断值
+      }
     }
   },
   methods: {
@@ -96,7 +101,7 @@ export default {
 ## 接口说明
 &emsp;
 
-#### WEN-VANT-PREVIEW Props
+#### Props
 
 Property | Type | Default | Comments
  :-- |:--: |:--:|:--
@@ -111,7 +116,7 @@ show-indicators | Boolean | true | 是否显示指示器
 touchable | Boolean | true | 是否可以通过手势滑动
 &emsp;
 
-#### WEN-VANT-PREVIEW Events
+#### Events
 
 Property | Comments | Params 
  :-- |:--|:--
@@ -122,7 +127,7 @@ video-play | 视频点击播放或暂停触发 | status: 返回true、false表�
 fullscreen | 视频全屏或退出全屏模式触发 | status: 返回true、false是否全屏, index: 当前页的索引 
 &emsp;
 
-#### WEN-VANT-PREVIEW Function
+#### Function
 
 Property | Comments | Params 
  :-- |:--|:--
@@ -133,11 +138,24 @@ resize | 外层元素大小或组件显示状态变化时，可以调用此方�
 &emsp;
 
 
-#### WEN-VANT-PREVIEW Slots
+#### Slots
 
 Property | Comments
  :-- |:--
 default | 轮播内容，当数据的type值不为video或image有用
 indicator | 自定义指示器，完全自由设计`注：使用该slot，需要通过position设置指示器的位置，否则无法看见指示器`
+&emsp;
+
+#### Config
+
+Property | Default | Comments
+ :-- |:-- |:--
+imgSrc | 'src' | 渲染图片的字段，String
+videoSrc | 'url' | 渲染视频的字段，String
+videoCover | 'cover' | 渲染视频的第一帧字段，String
+type | 'type' | 区分视频还是图片类型的字段，String
+videoType | 'video' | 视频类型的判断值，String、Number、Boolean、undefined、null
+imageType | 'image' | 图片类型的判断值，String、Number、Boolean、undefined、null
+
 
 

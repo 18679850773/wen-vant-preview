@@ -1,7 +1,8 @@
 <template>
   <div id="wen-vant-preview" v-if="modelValue">
     <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime">
-      <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index" @click="e => $listeners.click(e, index)">
+      <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index"
+        @click="e => typeof $listeners.click=='function'&&$listeners.click(e, index)">
         <vue-mini-player v-if="computedVideoType(item[_config.type])" :ref="'wen-vant-preview-video-'+index"
           :video="item.videoData" :mutex="true" @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass"
           @videoPlay="e => videoPlay(e,index)" @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
@@ -14,7 +15,7 @@
         <slot v-else v-bind="{item, index}"></slot>
       </van-swipe-item>
       <template #indicator v-if="$attrs['show-indicators']===undefined?true:$attrs['show-indicators']">
-        <slot name="indicator" v-if="$scopedSlots.indicator()" v-bind="{current}"></slot>
+        <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()" v-bind="{current}"></slot>
         <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
       </template>
     </van-swipe>
@@ -46,12 +47,7 @@ export default {
     },
     config: {
       type: Object,
-      default: () => ({
-        imgSrc: 'src',
-        videoSrc: 'url',
-        videoCover: 'cover',
-        type: 'type'
-      })
+      default: () => ({})
     },
     width: Number, height: Number, vertical: Boolean, stopPropagation: Boolean, lazyRender: Boolean
   },
@@ -62,7 +58,9 @@ export default {
         imgSrc: 'src',
         videoSrc: 'url',
         videoCover: 'cover',
-        type: 'type'
+        type: 'type',
+        videoType: 'video',
+        imageType: 'image',
       },
       videos: [],
       videoClass: '',
@@ -71,10 +69,10 @@ export default {
   },
   computed: {
     computedVideoType () {
-      return val => val == 'video'
+      return val => val === this._config.videoType
     },
     computedImageType () {
-      return val => val == 'image'
+      return val => val === this._config.imageType
     },
     _config () {
       return Object.assign(this.defconfig, this.config)
@@ -83,13 +81,13 @@ export default {
   watch: {
     list (newVal) {
       if (newVal) {
-        newVal.forEach(f => { if (this.computedVideoType(f[this._config.type])) this.formatVideoData(f) })
+        newVal.forEach((f, i) => { if (this.computedVideoType(f[this._config.type])) this.formatVideoData(f, i) })
       }
     }
   },
   mounted () {
     this.refTime = Date.now()
-    this.current = Number(this.$attrs["initial-swipe"])
+    this.current = Number(this.$attrs["initial-swipe"]) || 0
     if (this.list.length > 0) this.list.forEach((f, i) => { if (this.computedVideoType(f[this._config.type])) this.formatVideoData(f, i) })
     this.$nextTick(() => {
       document.body.append(this.$el)
@@ -98,11 +96,11 @@ export default {
   methods: {
     swipeChange (index) {
       if (this.videos.includes(this.current)) {
-        this.$refs["wen-vant-preview-video-" + this.current][0].$video.pause()
-        // this.$refs["wen-vant-preview-video-"+this.current][0].$video.currentTime = 0
+        const { $video } = this.$refs["wen-vant-preview-video-" + this.current][0]
+        $video.pause()
       }
       this.current = index;
-      this.$listeners.change(index)
+      typeof this.$listeners.change == 'function' && this.$listeners.change(index)
     },
     formatVideoData (item, index) {
       this.videos.push(index)
@@ -118,32 +116,33 @@ export default {
       }
     },
     clearSwipe () {
+      this.current = Number(this.$attrs["initial-swipe"]) || 0
       this.$emit('model-change', false);
     },
     videoFullscreen (status, index) {
-        this.$emit('fullscreen', status, index)
-        console.log('fullscreen', status, index)
+      this.$emit('fullscreen', status, index)
+      console.log('fullscreen', status, index)
     },
     videoPlay (status, index) {
       this.videoClass = status ? "play" : "pause"
       this.$emit('video-play', status, index)
       console.log('play - pause', status, index)
     },
-    videoReady(index) {
-        this.$emit('ready', index)
-        console.log('ready', index)
+    videoReady (index) {
+      this.$emit('ready', index)
+      console.log('ready', index)
     },
-    prev() {
-        this.$refs["wen-vant-preview-"+this.refTime].prev()
+    prev () {
+      this.$refs["wen-vant-preview-" + this.refTime].prev()
     },
-    next() {
-        this.$refs["wen-vant-preview-"+this.refTime].next()
+    next () {
+      this.$refs["wen-vant-preview-" + this.refTime].next()
     },
-    swipeTo() {
-        this.$refs["wen-vant-preview-"+this.refTime].swipeTo(...arguments)
+    swipeTo () {
+      this.$refs["wen-vant-preview-" + this.refTime].swipeTo(...arguments)
     },
-    resize() {
-        this.$refs["wen-vant-preview-"+this.refTime].resize()
+    resize () {
+      this.$refs["wen-vant-preview-" + this.refTime].resize()
     }
   }
 }
@@ -193,6 +192,9 @@ export default {
       display: flex !important;
       opacity: 1 !important;
     }
+  }
+  /deep/.van-image__error {
+    background-color: #444;
   }
 }
 </style>

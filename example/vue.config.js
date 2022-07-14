@@ -52,7 +52,6 @@ module.exports = {
     'vue-echarts',
     'resize-detector',
     'vue-plugin-load-script',
-    'bs-vue-base',
     'echarts'
   ],
   devServer: {

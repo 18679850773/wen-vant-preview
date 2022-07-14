@@ -3,11 +3,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
 const PackageJson = require('../package.json');
-const GenerateJsonPlugin = require('./plugin/generate-json-webpack-plugin');
-// const appJsonTemplate = require('../example/app.template.json');
-
-// const componentName = JSON.parse(`{"bs-${PackageJson.name.slice(PackageJson.name.lastIndexOf('-') + 1)}": "miniprogram_npm/${PackageJson.name}/index"}`);
-// appJsonTemplate.usingComponents = {...componentName, ...appJsonTemplate.usingComponents};
 
 module.exports = {
   mode: 'development',
@@ -29,6 +24,5 @@ module.exports = {
       //{from: './src/', to: './'}
      {from: './src/', to: './', ignore: ['*main.js']}
     ]),
-    // new GenerateJsonPlugin('../../../example/app.json', appJsonTemplate, null, 2)
   ],
 }

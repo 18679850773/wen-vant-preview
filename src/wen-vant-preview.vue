@@ -149,52 +149,50 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="less">
+<style>
 #wen-vant-preview {
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   z-index: 99;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0,0,0,0.6);
   color: white;
-  .van-swipe {
-    height: 100%;
-  }
-  .wen-vant-clear {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-  }
-  .custom-indicator {
-    position: absolute;
-    left: 50%;
-    top: 20px;
-    padding: 2px 5px;
-    font-size: 12px;
-    background: rgba(0, 0, 0, 0.1);
-    transform: translateX(-50%);
-  }
-  .wen-vant-preview-image {
-    width: 100%;
-    height: 100%;
-    /deep/.van-image__img {
-      width: 100%;
-      height: 100%;
-    }
-  }
-  .pause {
-    /deep/._play-btn {
-      display: block !important;
-      opacity: 1 !important;
-    }
-    /deep/.qun-base-controls {
-      display: flex !important;
-      opacity: 1 !important;
-    }
-  }
-  /deep/.van-image__error {
-    background-color: #444;
-  }
+}
+#wen-vant-preview .van-swipe {
+  height: 100%;
+}
+#wen-vant-preview .wen-vant-clear {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+#wen-vant-preview .custom-indicator {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  padding: 2px 5px;
+  font-size: 12px;
+  background: rgba(0,0,0,0.1);
+  transform: translateX(-50%);
+}
+#wen-vant-preview .wen-vant-preview-image {
+  width: 100%;
+  height: 100%;
+}
+#wen-vant-preview .wen-vant-preview-image .van-image__img {
+  width: 100%;
+  height: 100%;
+}
+#wen-vant-preview .pause ._play-btn {
+  display: block !important;
+  opacity: 1 !important;
+}
+#wen-vant-preview .pause .qun-base-controls {
+  display: flex !important;
+  opacity: 1 !important;
+}
+#wen-vant-preview .van-image__error {
+  background-color: #444;
 }
 </style>

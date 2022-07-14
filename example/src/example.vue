@@ -5,7 +5,7 @@
       ref="wen-vant-preview">
       <template v-slot="slotProps">
         <span
-          :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '100%','align-items': 'center','justify-content': 'center'}">
+          :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '80%','align-items': 'center','justify-content': 'center'}">
           {{ slotProps.item.name }}---- 下标：{{ slotProps.index }}
         </span>
         <button @click="itemClick">click</button>
@@ -17,6 +17,7 @@
       </template>
     </wen-vant-preview>
     <van-button type="primary" @click="vantClick">预览测试</van-button>
+    <van-button type="info" @click="vantClick2">预览测试</van-button>
   </div>
 </template>
 
@@ -29,7 +30,15 @@ export default {
   data () {
     return {
       showPreview: false,
-      previewList: [
+      previewList: [],
+      previewConfig: { key: 'id', imgSrc: 'src', videoSrc: 'url', videoCover: '', type: 'type' },
+      autoplay: 0,
+    }
+  },
+  methods: {
+    vantClick () {
+      this.showPreview = true
+      this.previewList = [
         {
           id: 1,
           name: '第一页',
@@ -57,14 +66,22 @@ export default {
           url: 'http://v.xiaohongshu.com/pre_post/01e2c976f53d85c80183700381e2fb09d5_259.mp4?sign=d002efb961ae9e2bb0484d459f6d088d&t=62d03d80',
           type: 'video'
         }
-      ],
-      previewConfig: { key: 'id', imgSrc: 'src', videoSrc: 'url', videoCover: '', type: 'type' },
-      autoplay: 0,
-    }
-  },
-  methods: {
-    vantClick () {
+      ]
+    },
+    vantClick2 () {
       this.showPreview = true
+      this.previewList = [{
+        id: 1,
+        name: '第一页',
+        value: '数据数据111',
+        color: '#fff'
+      },
+      {
+        id: 2,
+        name: '第二页',
+        label: 'wenshao',
+        color: '#c3ff24'
+      },]
     },
     previewClick (event, index) {
       console.log(event, index, 'previewClick')

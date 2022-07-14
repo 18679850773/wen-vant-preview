@@ -11,11 +11,15 @@
 &emsp;
 
 
+## 示例
+- ![image](./example.gif) 
+
+
 ## 安装
 ```
 # 基于Vue 2 项目，安装了 Vant 2：
 
-npm i wen-vant-preview -S
+npm i wen-vant-preview
 ```
 
 ## 使用方法
@@ -114,6 +118,7 @@ initial-swipe | Number、String | 0 | 初始位置索引值
 loop | Boolean | true | 是否开启循环，当处于最后一页时，下一页是否回到第一页
 show-indicators | Boolean | true | 是否显示指示器
 touchable | Boolean | true | 是否可以通过手势滑动
+
 &emsp;
 
 #### Events
@@ -125,6 +130,7 @@ click | 点击时触发 | event: Event, index: 当前页的索引 `注：video�
 ready | 视频准备完成后触发 | index: 当前页的索引 
 video-play | 视频点击播放或暂停触发 | status: 返回true、false表示视频播放或暂停, index: 当前页的索引 
 fullscreen | 视频全屏或退出全屏模式触发 | status: 返回true、false是否全屏, index: 当前页的索引 
+
 &emsp;
 
 #### Function
@@ -135,6 +141,7 @@ prev | 切换到上一轮播 | - -
 next | 切换到下一轮播  |- -
 swipeTo | 切换到指定位置 | index: number, options: {immediate: boolean} `immediate：是否跳过动画`
 resize | 外层元素大小或组件显示状态变化时，可以调用此方法来触发重绘 | - -
+
 &emsp;
 
 
@@ -144,6 +151,7 @@ Property | Comments
  :-- |:--
 default | 轮播内容，当数据的type值不为video或image有用
 indicator | 自定义指示器，完全自由设计`注：使用该slot，需要通过position设置指示器的位置，否则无法看见指示器`
+
 &emsp;
 
 #### Config
@@ -154,8 +162,8 @@ imgSrc | 'src' | 渲染图片的字段，String
 videoSrc | 'url' | 渲染视频的字段，String
 videoCover | 'cover' | 渲染视频的第一帧字段，String
 type | 'type' | 区分视频还是图片类型的字段，String
-videoType | 'video' | 视频类型的判断值，String、Number、Boolean、undefined、null
-imageType | 'image' | 图片类型的判断值，String、Number、Boolean、undefined、null
+videoType | 'video' | 视频类型的判断值，String、Number、Boolean、undefined、null，不能跟imageType相同
+imageType | 'image' | 图片类型的判断值，String、Number、Boolean、undefined、null，不能跟videoType相同
 
 
 

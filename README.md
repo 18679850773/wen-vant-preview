@@ -17,7 +17,7 @@
 
 ## 安装
 ```
-# 基于Vue 2 项目，安装了 Vant 2：
+# 安装该组件需要基于Vue 2项目，且安装了 Vant 2：
 
 npm i wen-vant-preview
 ```

@@ -156,7 +156,7 @@ export default {
   position: absolute;
   top: 0;
   z-index: 99;
-  background-color: rgba(0,0,0,0.6);
+  background-color: rgba(0,0,0,0.9);
   color: white;
 }
 #wen-vant-preview .van-swipe {
@@ -166,13 +166,14 @@ export default {
   position: absolute;
   top: 20px;
   right: 20px;
+  font-size: 20px;
 }
 #wen-vant-preview .custom-indicator {
   position: absolute;
   left: 50%;
   top: 20px;
   padding: 2px 5px;
-  font-size: 12px;
+  font-size: 16px;
   background: rgba(0,0,0,0.1);
   transform: translateX(-50%);
 }

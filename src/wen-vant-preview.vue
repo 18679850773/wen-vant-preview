@@ -1,25 +1,28 @@
 <template>
-  <div id="wen-vant-preview" v-if="modelValue">
-    <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime">
-      <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index"
-        @click="e => typeof $listeners.click=='function'&&$listeners.click(e, index)">
-        <vue-mini-player v-if="computedVideoType(item[_config.type])" :ref="'wen-vant-preview-video-'+index"
-          :video="item.videoData" :mutex="true" @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass"
-          @videoPlay="e => videoPlay(e,index)" @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
-        <van-image v-else-if="computedImageType(item[_config.type])" fit="contain" :src="item[_config.imgSrc]"
-          class="wen-vant-preview-image">
-          <template v-slot:loading>
-            <van-loading type="spinner" size="20" />
-          </template>
-        </van-image>
-        <slot v-else v-bind="{item, index}"></slot>
-      </van-swipe-item>
-      <template #indicator v-if="$attrs['show-indicators']===undefined?true:$attrs['show-indicators']">
-        <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()" v-bind="{current}"></slot>
-        <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
-      </template>
-    </van-swipe>
-    <van-icon name="clear" class="wen-vant-clear" @click="clearSwipe" />
+  <div id="wen-vant-preview" v-if="modelValue" :style="{backgroundColor: `rgba(0, 0, 0, ${scale})`}">
+    <div :style="{transform, transition}" class="wen-vant-preview">
+      <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime">
+        <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index" @click="swipeClick($event, index)"
+          @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd">
+          <vue-mini-player v-if="computedVideoType(item[_config.type])" :ref="'wen-vant-preview-video-'+index"
+            :video="item.videoData" :mutex="true" @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass"
+            @videoPlay="e => videoPlay(e,index)" @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
+          <van-image v-else-if="computedImageType(item[_config.type])" fit="contain" :src="item[_config.imgSrc]"
+            class="wen-vant-preview-image">
+            <template v-slot:loading>
+              <van-loading type="spinner" size="20" />
+            </template>
+          </van-image>
+          <slot v-else v-bind="{item, index}"></slot>
+        </van-swipe-item>
+        <template #indicator v-if="$attrs['show-indicators']===undefined?true:$attrs['show-indicators']">
+          <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()"
+            v-bind="{current}"></slot>
+          <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
+        </template>
+      </van-swipe>
+      <van-icon name="clear" class="wen-vant-clear" @click="clearSwipe" />
+    </div>
   </div>
 </template>
 
@@ -49,6 +52,10 @@ export default {
       type: Object,
       default: () => ({})
     },
+    clickClose: {
+      type: Boolean,
+      default: true,
+    },
     width: Number, height: Number, vertical: Boolean, stopPropagation: Boolean, lazyRender: Boolean
   },
   data () {
@@ -64,7 +71,12 @@ export default {
       },
       videos: [],
       videoClass: '',
-      refTime: ''
+      refTime: '',
+      scale: 1,
+      translateY: 0,
+      translateX: 0,
+      startClear: null,
+      startTransition: false
     }
   },
   computed: {
@@ -76,12 +88,27 @@ export default {
     },
     _config () {
       return Object.assign(this.defconfig, this.config)
+    },
+    transform () {
+      return `scale(${this.scale}) translate3d(${this.translateX}px, ${this.translateY}px, 0)`
+    },
+    transition () {
+      return this.startTransition ? `transform .5s` : 'none';
     }
   },
   watch: {
     list (newVal) {
       if (newVal) {
         newVal.forEach((f, i) => { if (this.computedVideoType(f[this._config.type])) this.formatVideoData(f, i) })
+      }
+    },
+    modelValue (newVal) {
+      if (newVal) {
+        this.scale = 1
+        this.translateY = 0
+        this.translateX = 0
+        this.startTransition = false
+        this.current = Number(this.$attrs["initial-swipe"]) || 0
       }
     }
   },
@@ -94,6 +121,56 @@ export default {
     })
   },
   methods: {
+    swipeMoveEnd (e) {
+      console.log(e)
+      this.startTransition = true
+      if (this.scale < 0.85) {
+        this.translateY = 1000
+        this.translateX *= 3
+        setTimeout(() => {
+          this.scale = 1
+          this.translateY = 0
+          this.translateX = 0
+          this.startTransition = false
+          this.clearSwipe();
+        }, 500)
+      } else {
+        this.scale = 1
+        this.translateY = 0
+        this.translateX = 0
+        setTimeout(() => {
+          this.startTransition = false
+        }, 500)
+      }
+      this.startClear = null
+    },
+    swipeMoveStart (e) {
+      const [{ pageX, pageY }] = e.changedTouches
+      this.startPageX = pageX
+      this.startPageY = pageY
+    },
+    swipeMove (e) {
+      const [{ pageX, pageY }] = e.changedTouches
+      if (Math.abs(pageY - this.startPageY) > Math.abs(pageX - this.startPageX) && this.startClear === null) {
+        this.startClear = true
+      } else if (this.startClear === null) this.startClear = false
+      if (this.startClear) {
+        const offset = (pageY - this.startPageY) / 1000
+        if (offset > 0) {
+          this.scale = 1 - offset
+          this.translateY = pageY - this.startPageY
+          this.translateX = pageX - this.startPageX
+        } else {
+          this.scale = 1
+          this.translateY = 0
+          this.translateX = 0
+        }
+      }
+    },
+    swipeClick (e, index) {
+      if (this.clickClose) this.clearSwipe();
+      typeof this.$listeners.click == 'function' && this.$listeners.click(e, index)
+    },
     swipeChange (index) {
       if (this.videos.includes(this.current)) {
         const { $video } = this.$refs["wen-vant-preview-video-" + this.current][0]
@@ -153,10 +230,17 @@ export default {
 #wen-vant-preview {
   width: 100%;
   height: 100%;
+  overflow: hidden;
   position: absolute;
   top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   z-index: 99;
-  background-color: rgba(0,0,0,0.9);
+}
+.wen-vant-preview {
+  width: 100%;
+  height: 100%;
   color: white;
 }
 #wen-vant-preview .van-swipe {
@@ -174,7 +258,7 @@ export default {
   top: 20px;
   padding: 2px 5px;
   font-size: 16px;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   transform: translateX(-50%);
 }
 #wen-vant-preview .wen-vant-preview-image {

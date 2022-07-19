@@ -5,7 +5,7 @@
       ref="wen-vant-preview">
       <template v-slot="slotProps">
         <span
-          :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '80%','align-items': 'center','justify-content': 'center'}">
+          :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '80%','align-items': 'center','justify-content': 'center', 'background-color': 'cadetblue'}">
           {{ slotProps.item.name }}---- 下标：{{ slotProps.index }}
         </span>
         <button @click="itemClick">click</button>
@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import WenVantPreview from 'wen-vant-preview'
+import WenVantPreview from '../components/wen-vant-preview'
 
 export default {
   name: 'example',

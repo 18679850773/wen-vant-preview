@@ -118,6 +118,7 @@ initial-swipe | Number、String | 0 | 初始位置索引值
 loop | Boolean | true | 是否开启循环，当处于最后一页时，下一页是否回到第一页
 show-indicators | Boolean | true | 是否显示指示器
 touchable | Boolean | true | 是否可以通过手势滑动
+click-close | Boolean | true | 是否可以通过点击任意位置关闭预览
 
 &emsp;
 

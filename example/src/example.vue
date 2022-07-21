@@ -2,7 +2,7 @@
   <div class="example">
     <wen-vant-preview v-model="showPreview" :list="previewList" :config="previewConfig" initial-swipe="1"
       :autoplay="autoplay" :loop="true" :show-indicators="true" @click="previewClick" @change="previewChange"
-      ref="wen-vant-preview">
+      ref="wen-vant-preview" :clearable="false" :pullclose="false">
       <template v-slot="slotProps">
         <span
           :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '80%','align-items': 'center','justify-content': 'center', 'background-color': 'cadetblue'}">
@@ -13,6 +13,11 @@
       <template #indicator="{current}">
         <div style="color: red;position: absolute;top: 10px;left: 20px;font-size: 36px;">
           {{current + 1}} / {{previewList.length}}
+        </div>
+      </template>
+      <template #cover="{index}">
+        <div >
+          {{index + 1}}
         </div>
       </template>
     </wen-vant-preview>

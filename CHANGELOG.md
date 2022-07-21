@@ -11,6 +11,17 @@ Enhance：代码重构或优化或格式化等
 ```
 ---
 
+## v0.1.8 &emsp;[ 2022-07-21 ]
+
+### Feature
+- [+] 新增props: clearable 右上角是否展示关闭按钮
+- [+] 新增props: pullclose 是否开启下拉关闭预览
+- [+] 新增Slots: cover 自定义覆盖层
+
+### Fix
+- [#] 优化下拉关闭过渡效果
+
+
 ## v0.1.6 &emsp;[ 2022-07-19 ]
 
 ### Feature

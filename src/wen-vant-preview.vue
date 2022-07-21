@@ -1,7 +1,8 @@
 <template>
-  <div id="wen-vant-preview" v-if="modelValue" :style="{backgroundColor: `rgba(0, 0, 0, ${scale})`}">
+  <div id="wen-vant-preview" v-if="modelValue" :class="startTransition&&scale < 0.95&&'start-transition'"
+    :style="{backgroundColor: `rgba(0, 0, 0, ${scale})`}">
     <div :style="{transform, transition}" class="wen-vant-preview">
-      <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime">
+      <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear">
         <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index" @click="swipeClick($event, index)"
           @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd">
           <vue-mini-player v-if="computedVideoType(item[_config.type])" :ref="'wen-vant-preview-video-'+index"
@@ -14,6 +15,7 @@
             </template>
           </van-image>
           <slot v-else v-bind="{item, index}"></slot>
+          <slot name="cover" v-bind="{index}"></slot>
         </van-swipe-item>
         <template #indicator v-if="$attrs['show-indicators']===undefined?true:$attrs['show-indicators']">
           <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()"
@@ -21,7 +23,7 @@
           <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
         </template>
       </van-swipe>
-      <van-icon name="clear" class="wen-vant-clear" @click="clearSwipe" />
+      <van-icon name="clear" class="wen-vant-clear" @click="clearSwipe" v-if="clearable" />
     </div>
   </div>
 </template>
@@ -54,7 +56,15 @@ export default {
     },
     clickClose: {
       type: Boolean,
-      default: true,
+      default: true
+    },
+    clearable: {
+      type: Boolean,
+      default: true
+    },
+    pullclose: {
+      type: Boolean,
+      default: true
     },
     width: Number, height: Number, vertical: Boolean, stopPropagation: Boolean, lazyRender: Boolean
   },
@@ -76,7 +86,7 @@ export default {
       translateY: 0,
       translateX: 0,
       startClear: null,
-      startTransition: false
+      startTransition: false,
     }
   },
   computed: {
@@ -93,8 +103,8 @@ export default {
       return `scale(${this.scale}) translate3d(${this.translateX}px, ${this.translateY}px, 0)`
     },
     transition () {
-      return this.startTransition ? `transform .5s` : 'none';
-    }
+      return this.startTransition ? `transform .4s` : 'none';
+    },
   },
   watch: {
     list (newVal) {
@@ -122,9 +132,14 @@ export default {
   },
   methods: {
     swipeMoveEnd (e) {
+      if (!this.pullclose) return false;
       console.log(e)
+      if (!this.startClear) {
+        this.startClear = null
+        return false
+      };
       this.startTransition = true
-      if (this.scale < 0.85) {
+      if (this.scale < 0.95) {
         this.translateY = 1000
         this.translateX *= 3
         setTimeout(() => {
@@ -133,23 +148,25 @@ export default {
           this.translateX = 0
           this.startTransition = false
           this.clearSwipe();
-        }, 500)
+        }, 350)
       } else {
         this.scale = 1
         this.translateY = 0
         this.translateX = 0
         setTimeout(() => {
           this.startTransition = false
-        }, 500)
+        }, 350)
       }
       this.startClear = null
     },
     swipeMoveStart (e) {
+      if (!this.pullclose) return false;
       const [{ pageX, pageY }] = e.changedTouches
       this.startPageX = pageX
       this.startPageY = pageY
     },
     swipeMove (e) {
+      if (!this.pullclose) return false;
       const [{ pageX, pageY }] = e.changedTouches
       if (Math.abs(pageY - this.startPageY) > Math.abs(pageX - this.startPageX) && this.startClear === null) {
         this.startClear = true
@@ -162,8 +179,8 @@ export default {
           this.translateX = pageX - this.startPageX
         } else {
           this.scale = 1
-          this.translateY = 0
-          this.translateX = 0
+          this.translateY = pageY - this.startPageY
+          this.translateX = pageX - this.startPageX
         }
       }
     },
@@ -237,6 +254,10 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 99;
+  transition: background-color 0.35s;
+}
+#wen-vant-preview.start-transition {
+  background-color: rgba(0, 0, 0, 0) !important;
 }
 .wen-vant-preview {
   width: 100%;

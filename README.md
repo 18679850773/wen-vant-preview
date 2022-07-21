@@ -37,6 +37,9 @@ npm i wen-vant-preview
           {{current + 1}} / {{previewList.length}}
         </div>
       </template>
+      <template #cover="{index}">
+        <div >{{index}}</div>
+      </template>
     </wen-vant-preview>
 ```
 
@@ -119,6 +122,8 @@ loop | Boolean | true | 是否开启循环，当处于最后一页时，下一�
 show-indicators | Boolean | true | 是否显示指示器
 touchable | Boolean | true | 是否可以通过手势滑动
 click-close | Boolean | true | 是否可以通过点击任意位置关闭预览
+clearable | Boolean | true | 右上角是否展示关闭按钮
+pullclose | Boolean | true | 是否开启下拉关闭预览
 
 &emsp;
 
@@ -150,8 +155,9 @@ resize | 外层元素大小或组件显示状态变化时，可以调用此方�
 
 Property | Comments
  :-- |:--
-default | 轮播内容，当数据的type值不为video或image有用
-indicator | 自定义指示器，完全自由设计`注：使用该slot，需要通过position设置指示器的位置，否则无法看见指示器`
+default | 轮播内容，当数据的type值不为video或image有用，slotProps = {item, index}
+indicator | 自定义指示器，完全自由设计`注：使用该slot，需要通过position设置指示器的位置，否则无法看见指示器`，slotProps = {current}
+cover | 自定义覆盖层，完全自由设计`注：使用该slot，需要通过position设置覆盖层的位置，否则无法看见覆盖层`，slotProps = {index}
 
 &emsp;
 

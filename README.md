@@ -124,6 +124,7 @@ touchable | Boolean | true | 是否可以通过手势滑动
 click-close | Boolean | true | 是否可以通过点击任意位置关闭预览
 clearable | Boolean | true | 右上角是否展示关闭按钮
 pullclose | Boolean | true | 是否开启下拉关闭预览
+enable-fullscreen | Boolean | true | video是否需要全屏预览
 
 &emsp;
 
@@ -136,6 +137,7 @@ click | 点击时触发 | event: Event, index: 当前页的索引 `注：video�
 ready | 视频准备完成后触发 | index: 当前页的索引 
 video-play | 视频点击播放或暂停触发 | status: 返回true、false表示视频播放或暂停, index: 当前页的索引 
 fullscreen | 视频全屏或退出全屏模式触发 | status: 返回true、false是否全屏, index: 当前页的索引 
+clear | 预览框关闭触发 | - - 
 
 &emsp;
 
@@ -158,6 +160,7 @@ Property | Comments
 default | 轮播内容，当数据的type值不为video或image有用，slotProps = {item, index}
 indicator | 自定义指示器，完全自由设计`注：使用该slot，需要通过position设置指示器的位置，否则无法看见指示器`，slotProps = {current}
 cover | 自定义覆盖层，完全自由设计`注：使用该slot，需要通过position设置覆盖层的位置，否则无法看见覆盖层`，slotProps = {index}
+clear | 自定义关闭按钮，完全自由设计`注：使用该slot，需要通过position设置覆盖层的位置，否则无法看见关闭按钮`
 
 &emsp;
 

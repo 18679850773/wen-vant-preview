@@ -11,11 +11,19 @@ Enhance：代码重构或优化或格式化等
 ```
 ---
 
+## v0.1.9 &emsp;[ 2022-07-26 ]
+
+### Feature
+- [+] 新增Props: enable-fullscreen video是否需要全屏预览功能
+- [+] 新增Events: clear 预览关闭回调
+- [+] 新增Slots: clear 自定义右上角关闭按钮
+
+
 ## v0.1.8 &emsp;[ 2022-07-21 ]
 
 ### Feature
-- [+] 新增props: clearable 右上角是否展示关闭按钮
-- [+] 新增props: pullclose 是否开启下拉关闭预览
+- [+] 新增Props: clearable 右上角是否展示关闭按钮
+- [+] 新增Props: pullclose 是否开启下拉关闭预览
 - [+] 新增Slots: cover 自定义覆盖层
 
 ### Fix

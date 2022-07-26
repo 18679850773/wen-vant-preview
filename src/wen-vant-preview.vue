@@ -1,5 +1,6 @@
 <template>
-  <div id="wen-vant-preview" v-if="modelValue" :class="startTransition&&scale < 0.95&&'start-transition'"
+  <div id="wen-vant-preview" v-if="modelValue"
+    :class="[startTransition&&scale < 0.95&&'start-transition', !enableFullscreen&&'close-fullscreen']"
     :style="{backgroundColor: `rgba(0, 0, 0, ${scale})`}">
     <div :style="{transform, transition}" class="wen-vant-preview">
       <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear">
@@ -24,6 +25,7 @@
         </template>
       </van-swipe>
       <van-icon name="clear" class="wen-vant-clear" @click="clearSwipe" v-if="clearable" />
+      <slot name="clear" v-if="typeof $scopedSlots.clear=='function'&&$scopedSlots.clear()"></slot>
     </div>
   </div>
 </template>
@@ -63,6 +65,10 @@ export default {
       default: true
     },
     pullclose: {
+      type: Boolean,
+      default: true
+    },
+    enableFullscreen: {
       type: Boolean,
       default: true
     },
@@ -119,6 +125,14 @@ export default {
         this.translateX = 0
         this.startTransition = false
         this.current = Number(this.$attrs["initial-swipe"]) || 0
+        this.$nextTick(() => {
+          if (!this.enableFullscreen) {
+            this.$el.querySelectorAll('video').forEach(f => {
+              f.setAttribute('webkit-playsinline', true)
+              f.setAttribute('playsinline', true)
+            })
+          }
+        })
       }
     }
   },
@@ -212,6 +226,7 @@ export default {
     clearSwipe () {
       this.current = Number(this.$attrs["initial-swipe"]) || 0
       this.$emit('model-change', false);
+      this.$emit('clear')
     },
     videoFullscreen (status, index) {
       this.$emit('fullscreen', status, index)
@@ -300,5 +315,8 @@ export default {
 }
 #wen-vant-preview .van-image__error {
   background-color: #444;
+}
+#wen-vant-preview.close-fullscreen ._fullscreen {
+  display: none;
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="example">
     <wen-vant-preview v-model="showPreview" :list="previewList" :config="previewConfig" initial-swipe="1"
       :autoplay="autoplay" :loop="true" :show-indicators="true" @click="previewClick" @change="previewChange"
-      ref="wen-vant-preview" :clearable="false" :pullclose="false">
+      ref="wen-vant-preview" :clearable="false" :enable-fullscreen="false" @clear="previewClear">
       <template v-slot="slotProps">
         <span
           :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '80%','align-items': 'center','justify-content': 'center', 'background-color': 'cadetblue'}">
@@ -93,6 +93,9 @@ export default {
     },
     previewChange (index) {
       console.log(index, 'previewChange')
+    },
+    previewClear() {
+        console.log('Clear')
     },
     itemClick () {
       this.$refs["wen-vant-preview"].swipeTo(3, { immediate: false })

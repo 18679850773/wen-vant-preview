@@ -2,11 +2,11 @@
 
 ## 功能介绍
 - 基于vant2.x的swipe组件改造，支持视频和图片预览的vant组件（适用移动端）
-- 预览暂不支持图片的缩放、旋转、平移之类的操作
 - 支持自动播放，循环播放，手势滑动切换，自定义初始位置索引值
 - 支持完全自定义指示器（需要通过position设置指示器的位置，否则无法看见指示器）
 - 支持除视频与图片之外的元素自定义预览
 - 支持视频页ready、play、pause、fullscreen回调
+- 支持图片页双指缩放、双击放大（v0.1.10）
 
 &emsp;
 
@@ -121,10 +121,10 @@ initial-swipe | Number、String | 0 | 初始位置索引值
 loop | Boolean | true | 是否开启循环，当处于最后一页时，下一页是否回到第一页
 show-indicators | Boolean | true | 是否显示指示器
 touchable | Boolean | true | 是否可以通过手势滑动
-click-close | Boolean | true | 是否可以通过点击任意位置关闭预览
-clearable | Boolean | true | 右上角是否展示关闭按钮
+click-close | Boolean | false | 是否可以通过点击任意位置关闭预览
+clearable | Boolean | false | 右上角是否展示关闭按钮
 pullclose | Boolean | true | 是否开启下拉关闭预览
-enable-fullscreen | Boolean | true | video是否需要全屏预览
+enable-fullscreen | Boolean | false | video是否需要全屏预览
 
 &emsp;
 

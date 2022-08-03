@@ -11,10 +11,22 @@ Enhance：代码重构或优化或格式化等
 ```
 ---
 
+## v0.1.10 &emsp;[ 2022-08-03 ]
+
+### Feature
+- [+] 新增图片双击放大
+- [+] 新增图片双指缩放
+
+### Fix
+- [#] 修改Props: clickClose 默认值
+- [#] 修改Props: clearable 默认值
+- [#] 修改Props: enableFullscreen 默认值
+
+
 ## v0.1.9 &emsp;[ 2022-07-26 ]
 
 ### Feature
-- [+] 新增Props: enable-fullscreen video是否需要全屏预览功能
+- [+] 新增Props: enable-fullscreen，视频预览页面是否需要全屏预览按钮
 - [+] 新增Events: clear 预览关闭回调
 - [+] 新增Slots: clear 自定义右上角关闭按钮
 

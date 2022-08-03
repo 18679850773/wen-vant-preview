@@ -1,16 +1,18 @@
 <template>
-  <div id="wen-vant-preview" v-if="modelValue"
+  <div id="wen-vant-preview" v-if="modelValue" @touchmove="stopPropagations" @touchend="stopPropagations"
     :class="[startTransition&&scale < 0.95&&'start-transition', !enableFullscreen&&'close-fullscreen']"
-    :style="{backgroundColor: `rgba(0, 0, 0, ${scale})`}">
+    :style="{backgroundColor: `rgba(0, 0, 0, ${scale-(1-scale)*4})`}">
     <div :style="{transform, transition}" class="wen-vant-preview">
-      <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear">
+      <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear"
+        :show-indicators="false">
         <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index" @click="swipeClick($event, index)"
           @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd">
           <vue-mini-player v-if="computedVideoType(item[_config.type])" :ref="'wen-vant-preview-video-'+index"
             :video="item.videoData" :mutex="true" @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass"
             @videoPlay="e => videoPlay(e,index)" @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
           <van-image v-else-if="computedImageType(item[_config.type])" fit="contain" :src="item[_config.imgSrc]"
-            class="wen-vant-preview-image">
+            class="wen-vant-preview-image" :style="imageTransform" :class="[imageStartTransition&&'start-transition']"
+            :ref="'wen-vant-preview-image-'+index">
             <template v-slot:loading>
               <van-loading type="spinner" size="20" />
             </template>
@@ -18,21 +20,19 @@
           <slot v-else v-bind="{item, index}"></slot>
           <slot name="cover" v-bind="{index}"></slot>
         </van-swipe-item>
-        <template #indicator v-if="$attrs['show-indicators']===undefined?true:$attrs['show-indicators']">
-          <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()"
-            v-bind="{current}"></slot>
-          <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
-        </template>
       </van-swipe>
-      <van-icon name="clear" class="wen-vant-clear" @click="clearSwipe" v-if="clearable" />
-      <slot name="clear" v-if="typeof $scopedSlots.clear=='function'&&$scopedSlots.clear()"></slot>
     </div>
+
+    <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()"
+      v-bind="{current}"></slot>
+    <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
+
+    <slot name="clear" v-if="typeof $scopedSlots.clear=='function'&&$scopedSlots.clear()"></slot>
+    <van-icon name="clear" v-else class="wen-vant-clear" @click="clearSwipe" v-show="clearable" />
   </div>
 </template>
 
 <script>
-
-
 export default {
   install (Vue) {
     Vue.component(this.name, this);
@@ -44,33 +44,33 @@ export default {
     event: "model-change",
   },
   props: {
-    list: {
+    list: { // 数据源
       type: Array,
       default: () => []
     },
-    modelValue: {
+    modelValue: { // 展示、隐藏预览
       type: Boolean,
       default: false,
     },
-    config: {
+    config: {   // 图片或视频的配置
       type: Object,
       default: () => ({})
     },
-    clickClose: {
+    clickClose: { // 是否开启点击关闭
+      type: Boolean,
+      default: false
+    },
+    clearable: { // 右上角是否展示关闭图标
+      type: Boolean,
+      default: false
+    },
+    pullclose: { // 是否开启下拉关闭
       type: Boolean,
       default: true
     },
-    clearable: {
+    enableFullscreen: { // 是否开启全屏预览功能
       type: Boolean,
-      default: true
-    },
-    pullclose: {
-      type: Boolean,
-      default: true
-    },
-    enableFullscreen: {
-      type: Boolean,
-      default: true
+      default: false
     },
     width: Number, height: Number, vertical: Boolean, stopPropagation: Boolean, lazyRender: Boolean
   },
@@ -91,11 +91,20 @@ export default {
       scale: 1,
       translateY: 0,
       translateX: 0,
+      translateImageY: 0,
+      translateImageX: 0,
       startClear: null,
       startTransition: false,
+      imageStartTransition: false,
+      scaleMoveStart: -1,
+      scale2: 1, // 双指缩放
+      endScale2: 1,
     }
   },
   computed: {
+    currentSwipeIsImage () {
+      return this.computedImageType(this.list[this.current][this._config.type])
+    },
     computedVideoType () {
       return val => val === this._config.videoType
     },
@@ -104,6 +113,9 @@ export default {
     },
     _config () {
       return Object.assign(this.defconfig, this.config)
+    },
+    imageTransform () {
+      return `transform: scale(${this.scale2}) translate3d(${this.translateImageX}px, ${this.translateImageY}px, 0)`
     },
     transform () {
       return `scale(${this.scale}) translate3d(${this.translateX}px, ${this.translateY}px, 0)`
@@ -145,8 +157,87 @@ export default {
     })
   },
   methods: {
+    doubleTouch (e) {
+      if (this.currentSwipeIsImage) {
+        const [{ pageX, pageY }] = e.changedTouches
+        this.scale2 = this.scale2 == 1 ? 3 : 1
+        if (this.scale2 == 3) {
+          this.translateImageX = window.innerWidth / 2 - pageX
+          this.translateImageY = window.innerHeight / 2 - pageY
+          this.processingBoundaries()
+          this.imageStartTransition = true
+          setTimeout(() => {
+            this.imageStartTransition = false
+          }, 350)
+        } else {
+          this.translateImageX = this.translateImageY = 0
+          this.imageStartTransition = true
+          setTimeout(() => {
+            this.imageStartTransition = false
+          }, 350)
+        }
+      }
+    },
+    stopPropagations (e) {
+      if (this.currentSwipeIsImage) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    get2pointDistance (changedTouches) {
+      const [{ pageX: x1, pageY: y1 }, { pageX: x2, pageY: y2 }] = changedTouches
+      const dx = Math.abs(x2 - x1);
+      const dy = Math.abs(y2 - y1);
+      return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+    },
+    resetImageTranslate () {
+      this.translateImageX = 0
+      this.translateImageY = 0
+      this.translateImageEndX = 0
+      this.translateImageEndY = 0
+    },
+    processingBoundaries () {
+      const width = window.innerWidth * this.scale2
+      const height = window.innerHeight * this.scale2
+      const offx = parseInt((width - window.innerWidth) / 2 / this.scale2)
+      const offy = parseInt((height - window.innerHeight) / 2 / this.scale2)
+      this.translateImageX = Math.min(Math.max(-offx, this.translateImageX), offx)
+      this.translateImageY = Math.min(Math.max(-offy, this.translateImageY), offy)
+      this.translateImageEndX = this.translateImageX
+      this.translateImageEndY = this.translateImageY
+    },
     swipeMoveEnd (e) {
+      if (Date.now() - this.lastTouchTime < 300) {
+        this.doubleTouch(e)
+        return false;
+      }
+      this.lastTouchTime = Date.now()
       if (!this.pullclose) return false;
+
+      if (this.scaleMoveStart == 2 && this.currentSwipeIsImage) {
+        this.scaleMoveStart = 0
+        this.endScale2 = this.scale2
+        if (this.endScale2 < 1) {
+          this.endScale2 = 1
+          this.scale2 = 1
+          this.imageStartTransition = true
+          this.resetImageTranslate()
+          setTimeout(() => {
+            this.imageStartTransition = false
+          }, 350)
+        }
+        return false
+      }
+
+      if (this.currentSwipeIsImage && this.scale2 > 1) {
+        this.processingBoundaries()
+        this.imageStartTransition = true
+        setTimeout(() => {
+          this.imageStartTransition = false
+        }, 350)
+        return false;
+      }
+
       console.log(e)
       if (!this.startClear) {
         this.startClear = null
@@ -175,13 +266,40 @@ export default {
     },
     swipeMoveStart (e) {
       if (!this.pullclose) return false;
-      const [{ pageX, pageY }] = e.changedTouches
-      this.startPageX = pageX
-      this.startPageY = pageY
+      this.scaleMoveStart = e.targetTouches.length;
+      if (this.scaleMoveStart == 1) {
+        const [{ pageX, pageY }] = e.changedTouches
+        this.startPageX = pageX
+        this.startPageY = pageY
+      } else if (this.scaleMoveStart == 2 && this.currentSwipeIsImage) {
+        this.startDistance = this.get2pointDistance(e.targetTouches)
+      }
+    },
+    scaleMoveHander (changedTouches) {
+      const distance = this.get2pointDistance(changedTouches) - this.startDistance
+      this.scale2 = Math.min(distance / this.startDistance + this.endScale2, 5)
+    },
+    imageMoveHander (pageX, pageY) {
+      this.translateImageY = (pageY - this.startPageY) / this.scale2 + (this.translateImageEndY || 0)
+      this.translateImageX = (pageX - this.startPageX) / this.scale2 + (this.translateImageEndX || 0)
+      //   const {height, width} = this.$refs["wen-vant-preview-image-"+this.current][0].$el.getBoundingClientRect()
     },
     swipeMove (e) {
       if (!this.pullclose) return false;
+      if (this.scaleMoveStart == 0) return false;
+      if (this.scaleMoveStart == 2) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.currentSwipeIsImage && this.scaleMoveHander(e.changedTouches)
+        return false
+      }
       const [{ pageX, pageY }] = e.changedTouches
+      if (this.scaleMoveStart == 1 && this.currentSwipeIsImage && this.scale2 > 1) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.imageMoveHander(pageX, pageY)
+        return false
+      }
       if (Math.abs(pageY - this.startPageY) > Math.abs(pageX - this.startPageX) && this.startClear === null) {
         this.startClear = true
       } else if (this.startClear === null) this.startClear = false
@@ -203,6 +321,10 @@ export default {
       typeof this.$listeners.click == 'function' && this.$listeners.click(e, index)
     },
     swipeChange (index) {
+      this.scaleMoveStart = 0
+      this.endScale2 = 1
+      this.scale2 = 1
+      this.resetImageTranslate()
       if (this.videos.includes(this.current)) {
         const { $video } = this.$refs["wen-vant-preview-video-" + this.current][0]
         $video.pause()
@@ -227,6 +349,8 @@ export default {
       this.current = Number(this.$attrs["initial-swipe"]) || 0
       this.$emit('model-change', false);
       this.$emit('clear')
+      this.endScale2 = 1
+      this.scale2 = 1
     },
     videoFullscreen (status, index) {
       this.$emit('fullscreen', status, index)
@@ -269,7 +393,6 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 99;
-  transition: background-color 0.35s;
 }
 #wen-vant-preview.start-transition {
   background-color: rgba(0, 0, 0, 0) !important;
@@ -294,13 +417,18 @@ export default {
   top: 20px;
   padding: 2px 5px;
   font-size: 16px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.3);
   transform: translateX(-50%);
+  color: white;
 }
 #wen-vant-preview .wen-vant-preview-image {
   width: 100%;
   height: 100%;
 }
+#wen-vant-preview .wen-vant-preview-image.start-transition {
+  transition: transform 0.35s;
+}
+
 #wen-vant-preview .wen-vant-preview-image .van-image__img {
   width: 100%;
   height: 100%;

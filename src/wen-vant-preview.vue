@@ -285,8 +285,7 @@ export default {
       //   const {height, width} = this.$refs["wen-vant-preview-image-"+this.current][0].$el.getBoundingClientRect()
     },
     swipeMove (e) {
-      if (!this.pullclose) return false;
-      if (this.scaleMoveStart == 0) return false;
+      if (!this.pullclose||this.scaleMoveStart == 0||this.scaleMoveStart > 2) return false;
       if (this.scaleMoveStart == 2) {
         e.preventDefault();
         e.stopPropagation();

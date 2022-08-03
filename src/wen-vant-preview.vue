@@ -160,7 +160,7 @@ export default {
     doubleTouch (e) {
       if (this.currentSwipeIsImage) {
         const [{ pageX, pageY }] = e.changedTouches
-        this.scale2 = this.scale2 == 1 ? 3 : 1
+        this.scale2 = this.scale2 < 2 ? 3 : 1
         if (this.scale2 == 3) {
           this.translateImageX = window.innerWidth / 2 - pageX
           this.translateImageY = window.innerHeight / 2 - pageY

@@ -11,6 +11,12 @@ Enhance：代码重构或优化或格式化等
 ```
 ---
 
+## v0.1.11 &emsp;[ 2022-08-04 ]
+
+### Feature
+- [+] 新增Props: traceability.sync 溯源DOM
+
+
 ## v0.1.10 &emsp;[ 2022-08-03 ]
 
 ### Feature

@@ -7,6 +7,7 @@
 - 支持除视频与图片之外的元素自定义预览
 - 支持视频页ready、play、pause、fullscreen回调
 - 支持图片页双指缩放、双击放大（v0.1.10）
+- 打开或关闭预览是否从目标出现或结束（v0.1.11）
 
 &emsp;
 
@@ -25,7 +26,7 @@ npm i wen-vant-preview
 ## 使用方法
 
 ``` xml
-    <wen-vant-preview v-model="showPreview" :list="previewList" ref="wen-vant-preview" :config="previewConfig">
+    <wen-vant-preview v-model="showPreview" :list="previewList" ref="wen-vant-preview" :config="previewConfig" :traceability.sync="traceability">
       <template v-slot="{item, index}">
         <span :style="{color: `${item.color}`, 'display': 'flex','height': '100%','align-items': 'center','justify-content': 'center'}">
           {{ item.name }}----{{ index + 1 }}
@@ -41,6 +42,7 @@ npm i wen-vant-preview
         <div >{{index}}</div>
       </template>
     </wen-vant-preview>
+    <van-button type="primary" @click="vantClick($event)">预览测试</van-button>
 ```
 
 ``` js
@@ -50,6 +52,7 @@ export default {
   data () {
     return {
       showPreview: false,
+      traceability: null,
       previewList: [
         {
           id: 1,
@@ -87,7 +90,8 @@ export default {
     }
   },
   methods: {
-    vantClick () {
+    vantClick (event) {
+      this.traceability = event.target
       this.showPreview = true
     },
     previewClick (event, index) {
@@ -125,6 +129,9 @@ click-close | Boolean | false | 是否可以通过点击任意位置关闭预览
 clearable | Boolean | false | 右上角是否展示关闭按钮
 pullclose | Boolean | true | 是否开启下拉关闭预览
 enable-fullscreen | Boolean | false | video是否需要全屏预览
+traceability.sync | DOM | null | 打开或关闭预览是否从目标出现或结束，溯源动画！
+
+traceability使用说明：开启该模式，请传递目标原生dom，组件内部关闭预览会清空traceability的值，如果你希望每次打开预览的时候都有溯源动画，请在赋值v-model之前把目标原生dom赋值给traceability.sync
 
 &emsp;
 

@@ -1,18 +1,19 @@
 <template>
   <div id="wen-vant-preview" v-if="modelValue" @touchmove="stopPropagations" @touchend="stopPropagations"
     :class="[startTransition&&scale < 0.95&&'start-transition', !enableFullscreen&&'close-fullscreen']"
-    :style="{backgroundColor: `rgba(0, 0, 0, ${scale-(1-scale)*4})`}">
+    :style="{backgroundColor: `rgba(0, 0, 0, ${traceabilityEnd?0:scale-(1-scale)*4})`}">
     <div :style="{transform, transition}" class="wen-vant-preview">
       <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear"
         :show-indicators="false">
         <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index" @click="swipeClick($event, index)"
           @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd">
-          <vue-mini-player v-if="computedVideoType(item[_config.type])" :ref="'wen-vant-preview-video-'+index"
-            :video="item.videoData" :mutex="true" @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass"
-            @videoPlay="e => videoPlay(e,index)" @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
+          <vue-mini-player v-if="computedVideoType(item[_config.type])"
+            :ref="'wen-vant-preview-video-'+item.randomString" :video="item.videoData" :mutex="true"
+            @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass" @videoPlay="e => videoPlay(e,index)"
+            @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
           <van-image v-else-if="computedImageType(item[_config.type])" fit="contain" :src="item[_config.imgSrc]"
             class="wen-vant-preview-image" :style="imageTransform" :class="[imageStartTransition&&'start-transition']"
-            :ref="'wen-vant-preview-image-'+index">
+            :ref="'wen-vant-preview-image-'+item.randomString">
             <template v-slot:loading>
               <van-loading type="spinner" size="20" />
             </template>
@@ -72,6 +73,7 @@ export default {
       type: Boolean,
       default: false
     },
+    traceability: Object, // 是否开启溯源模式
     width: Number, height: Number, vertical: Boolean, stopPropagation: Boolean, lazyRender: Boolean
   },
   data () {
@@ -99,6 +101,7 @@ export default {
       scaleMoveStart: -1,
       scale2: 1, // 双指缩放
       endScale2: 1,
+      traceabilityEnd: false
     }
   },
   computed: {
@@ -127,7 +130,7 @@ export default {
   watch: {
     list (newVal) {
       if (newVal) {
-        newVal.forEach((f, i) => { if (this.computedVideoType(f[this._config.type])) this.formatVideoData(f, i) })
+        newVal.forEach((f, i) => { f.randomString = this.randomString(16); if (this.computedVideoType(f[this._config.type])) this.formatVideoData(f, i) })
       }
     },
     modelValue (newVal) {
@@ -144,7 +147,14 @@ export default {
               f.setAttribute('playsinline', true)
             })
           }
+          if (this.traceability) {
+            const { left, width, height, top } = this.traceability.getBoundingClientRect()
+            this.$el.style.transform = `scale(${width / window.innerWidth}, ${height / window.innerHeight}) translate(${left}px, ${top}px)`
+            this.$el.style.transformOrigin = `${left}px ${top}px `
+          }
         })
+      } else {
+        this.$emit('update:traceability', null)
       }
     }
   },
@@ -157,6 +167,16 @@ export default {
     })
   },
   methods: {
+    randomString (len) {
+      len = len || 32;
+      const $chars = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678';    /****默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+      const maxPos = $chars.length;
+      let pwd = '';
+      for (let i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
+      }
+      return pwd;
+    },
     doubleTouch (e) {
       if (this.currentSwipeIsImage) {
         const [{ pageX, pageY }] = e.changedTouches
@@ -245,15 +265,29 @@ export default {
       };
       this.startTransition = true
       if (this.scale < 0.95) {
-        this.translateY = 1000
-        this.translateX *= 3
-        setTimeout(() => {
-          this.scale = 1
+        if (this.traceability) {
+          this.traceabilityEnd = true
+          this.$el.style.animation = 'reverse-preview .35s reverse'
           this.translateY = 0
           this.translateX = 0
-          this.startTransition = false
-          this.clearSwipe();
-        }, 350)
+          this.scale = 1
+          setTimeout(() => {
+            this.startTransition = false
+            this.traceabilityEnd = false
+            this.clearSwipe();
+          }, 400)
+        } else {
+          this.traceabilityEnd = false
+          this.translateY = 1000
+          this.translateX *= 3
+          setTimeout(() => {
+            this.scale = 1
+            this.translateY = 0
+            this.translateX = 0
+            this.startTransition = false
+            this.clearSwipe();
+          }, 350)
+        }
       } else {
         this.scale = 1
         this.translateY = 0
@@ -285,7 +319,7 @@ export default {
       //   const {height, width} = this.$refs["wen-vant-preview-image-"+this.current][0].$el.getBoundingClientRect()
     },
     swipeMove (e) {
-      if (!this.pullclose||this.scaleMoveStart == 0||this.scaleMoveStart > 2) return false;
+      if (!this.pullclose || this.scaleMoveStart == 0 || this.scaleMoveStart > 2) return false;
       if (this.scaleMoveStart == 2) {
         e.preventDefault();
         e.stopPropagation();
@@ -324,15 +358,16 @@ export default {
       this.endScale2 = 1
       this.scale2 = 1
       this.resetImageTranslate()
-      if (this.videos.includes(this.current)) {
-        const { $video } = this.$refs["wen-vant-preview-video-" + this.current][0]
+      const { randomString } = this.list[this.current]
+      if (this.videos.includes(randomString)) {
+        const { $video } = this.$refs["wen-vant-preview-video-" + randomString][0]
         $video.pause()
       }
       this.current = index;
       typeof this.$listeners.change == 'function' && this.$listeners.change(index)
     },
     formatVideoData (item, index) {
-      this.videos.push(index)
+      this.videos.push(item.randomString)
       item.videoData = {
         url: item[this._config.videoSrc],
         cover: item[this._config.videoCover],
@@ -392,6 +427,19 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 99;
+  animation: start-preview 0.35s forwards;
+}
+@keyframes start-preview {
+  100% {
+    transform: scale(1) translate(0, 0);
+    transform-origin: center;
+  }
+}
+@keyframes reverse-preview {
+  100% {
+    transform: scale(1) translate(0, 0);
+    transform-origin: center;
+  }
 }
 #wen-vant-preview.start-transition {
   background-color: rgba(0, 0, 0, 0) !important;

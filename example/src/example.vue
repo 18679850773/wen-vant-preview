@@ -2,7 +2,7 @@
   <div class="example">
     <wen-vant-preview v-model="showPreview" :list="previewList" :config="previewConfig" initial-swipe="1"
       :autoplay="autoplay" :loop="true" :show-indicators="true" @click="previewClick" @change="previewChange"
-      ref="wen-vant-preview" :clearable="false" :enable-fullscreen="false" @clear="previewClear">
+      ref="wen-vant-preview" :clearable="false" :enable-fullscreen="false" @clear="previewClear" :traceability.sync="traceability">
       <template v-slot="slotProps">
         <span
           :style="{color: `${slotProps.item.color}`, 'display': 'flex','height': '80%','align-items': 'center','justify-content': 'center', 'background-color': 'cadetblue'}">
@@ -16,13 +16,15 @@
         </div>
       </template>
       <template #cover="{index}">
-        <div >
+        <div>
           {{index + 1}}
         </div>
       </template>
     </wen-vant-preview>
-    <van-button type="primary" @click="vantClick">预览测试</van-button>
-    <van-button type="info" @click="vantClick2">预览测试</van-button>
+    <van-button type="primary" @click="vantClick($event)">预览测试</van-button>
+    <van-button type="info" @click="vantClick2($event)">预览测试</van-button>
+
+    <span class="test-span" :class="reversespan"></span>
   </div>
 </template>
 
@@ -38,10 +40,18 @@ export default {
       previewList: [],
       previewConfig: { key: 'id', imgSrc: 'src', videoSrc: 'url', videoCover: '', type: 'type' },
       autoplay: 0,
+      reversespan: '',
+      traceability: null
     }
   },
+  mounted() {
+    setTimeout(() => {
+        this.reversespan = 'reversespan'
+    }, 5000)
+  },
   methods: {
-    vantClick () {
+    vantClick (event) {
+      this.traceability = event.target
       this.showPreview = true
       this.previewList = [
         {
@@ -73,7 +83,8 @@ export default {
         }
       ]
     },
-    vantClick2 () {
+    vantClick2 (event) {
+      this.traceability = event.target
       this.showPreview = true
       this.previewList = [{
         id: 1,
@@ -94,8 +105,8 @@ export default {
     previewChange (index) {
       console.log(index, 'previewChange')
     },
-    previewClear() {
-        console.log('Clear')
+    previewClear () {
+      console.log('Clear')
     },
     itemClick () {
       this.$refs["wen-vant-preview"].swipeTo(3, { immediate: false })
@@ -112,5 +123,29 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+}
+
+.test-span {
+  width: 100px;
+  height: 100px;
+  background-color: aqua;
+  position: absolute;
+  top: 200px;
+  left: 0;
+  animation: test-span 1s forwards;
+}
+.reversespan{
+    /* animation-play-state: paused; */
+    animation: test-span2 1s reverse;
+}
+@keyframes test-span {
+    100%{
+        transform: translateX(200px);
+    }
+}
+@keyframes test-span2 {
+    100%{
+        transform: translateX(200px);
+    }
 }
 </style>

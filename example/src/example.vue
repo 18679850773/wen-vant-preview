@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import './assets/inobounce.min'
 import WenVantPreview from '../components/wen-vant-preview'
 
 export default {
@@ -78,8 +79,8 @@ export default {
         },
         {
           id: 5,
-          url: 'http://v.xiaohongshu.com/pre_post/01e2c976f53d85c80183700381e2fb09d5_259.mp4?sign=d002efb961ae9e2bb0484d459f6d088d&t=62d03d80',
-          type: 'video'
+          src: 'https://uploadfile.bizhizu.cn/up/96/2c/bf/962cbf6f70342ed7649cc70449457733.jpg',
+          type: 'image'
         }
       ]
     },

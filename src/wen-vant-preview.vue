@@ -12,7 +12,7 @@
             @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass" @videoPlay="e => videoPlay(e,index)"
             @ready="()=>videoReady(index)" style="width:100%;height:100%;" />
           <van-image v-else-if="computedImageType(item[_config.type])" fit="contain" :src="item[_config.imgSrc]"
-            class="wen-vant-preview-image" :style="imageTransform" :class="[imageStartTransition&&'start-transition']"
+            class="wen-vant-preview-image" :style="current==index?imageTransform:''" :class="[imageStartTransition&&'start-transition']"
             :ref="'wen-vant-preview-image-'+item.randomString">
             <template v-slot:loading>
               <van-loading type="spinner" size="20" />
@@ -98,7 +98,7 @@ export default {
       startClear: null,
       startTransition: false,
       imageStartTransition: false,
-      scaleMoveStart: -1,
+      scaleMoveStart: 0,
       scale2: 1, // 双指缩放
       endScale2: 1,
       traceabilityEnd: false
@@ -181,6 +181,7 @@ export default {
       if (this.currentSwipeIsImage) {
         const [{ pageX, pageY }] = e.changedTouches
         this.scale2 = this.scale2 < 2 ? 3 : 1
+        this.endScale2 = this.scale2
         if (this.scale2 == 3) {
           this.translateImageX = window.innerWidth / 2 - pageX
           this.translateImageY = window.innerHeight / 2 - pageY
@@ -190,7 +191,7 @@ export default {
             this.imageStartTransition = false
           }, 350)
         } else {
-          this.translateImageX = this.translateImageY = 0
+          this.resetImageTranslate()
           this.imageStartTransition = true
           setTimeout(() => {
             this.imageStartTransition = false
@@ -216,7 +217,7 @@ export default {
       this.translateImageEndX = 0
       this.translateImageEndY = 0
     },
-    processingBoundaries () {
+    processingBoundaries (e) {
       const width = window.innerWidth * this.scale2
       const height = window.innerHeight * this.scale2
       const offx = parseInt((width - window.innerWidth) / 2 / this.scale2)
@@ -227,30 +228,37 @@ export default {
       this.translateImageEndY = this.translateImageY
     },
     swipeMoveEnd (e) {
-      if (Date.now() - this.lastTouchTime < 300) {
+      const [{pageX, pageY}] = e.changedTouches
+      if (this.get2pointDistance([{pageX, pageY}, {pageX: this.lastTouchX, pageY: this.lastTouchY}]) < 20 && Date.now() - this.lastTouchTime < 300) {
         this.doubleTouch(e)
+        this.scaleMoveStart = 0
         return false;
       }
-      this.lastTouchTime = Date.now()
-      if (!this.pullclose) return false;
+      this.lastTouchTime = Date.now() 
+      this.lastTouchX = e.changedTouches[0].pageX
+      this.lastTouchY = e.changedTouches[0].pageY
 
       if (this.scaleMoveStart == 2 && this.currentSwipeIsImage) {
         this.scaleMoveStart = 0
         this.endScale2 = this.scale2
         if (this.endScale2 < 1) {
-          this.endScale2 = 1
-          this.scale2 = 1
-          this.imageStartTransition = true
-          this.resetImageTranslate()
-          setTimeout(() => {
-            this.imageStartTransition = false
-          }, 350)
+            this.endScale2 = 1
+            this.scale2 = 1
+            this.imageStartTransition = true
+            this.resetImageTranslate()
+            setTimeout(() => {
+                this.imageStartTransition = false
+            }, 350)
+        } else {
+            this.processingBoundaries(e)
         }
         return false
       }
 
-      if (this.currentSwipeIsImage && this.scale2 > 1) {
-        this.processingBoundaries()
+      if (!this.pullclose) return false;
+
+      if (this.scaleMoveStart == 1 && this.currentSwipeIsImage && this.scale2 > 1) {
+        this.processingBoundaries(e)
         this.imageStartTransition = true
         setTimeout(() => {
           this.imageStartTransition = false
@@ -300,18 +308,19 @@ export default {
     },
     swipeMoveStart (e) {
       if (!this.pullclose) return false;
-      this.scaleMoveStart = e.targetTouches.length;
+      this.scaleMoveStart = e.touches.length;
       if (this.scaleMoveStart == 1) {
-        const [{ pageX, pageY }] = e.changedTouches
+        const [{ pageX, pageY }] = e.touches
         this.startPageX = pageX
         this.startPageY = pageY
       } else if (this.scaleMoveStart == 2 && this.currentSwipeIsImage) {
         this.startDistance = this.get2pointDistance(e.targetTouches)
       }
     },
-    scaleMoveHander (changedTouches) {
-      const distance = this.get2pointDistance(changedTouches) - this.startDistance
-      this.scale2 = Math.min(distance / this.startDistance + this.endScale2, 5)
+    scaleMoveHander (touches) {
+      const distance = this.get2pointDistance(touches) - this.startDistance
+      const ratio = distance>0?1:this.scale2
+      this.scale2 = Math.min(distance / this.startDistance * ratio + this.endScale2, 5)
     },
     imageMoveHander (pageX, pageY) {
       this.translateImageY = (pageY - this.startPageY) / this.scale2 + (this.translateImageEndY || 0)
@@ -319,14 +328,18 @@ export default {
       //   const {height, width} = this.$refs["wen-vant-preview-image-"+this.current][0].$el.getBoundingClientRect()
     },
     swipeMove (e) {
-      if (!this.pullclose || this.scaleMoveStart == 0 || this.scaleMoveStart > 2) return false;
+      if (!this.pullclose || this.scaleMoveStart == 0 || this.scaleMoveStart > 2) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }
       if (this.scaleMoveStart == 2) {
         e.preventDefault();
         e.stopPropagation();
-        this.currentSwipeIsImage && this.scaleMoveHander(e.changedTouches)
+        this.currentSwipeIsImage && this.scaleMoveHander(e.touches)
         return false
       }
-      const [{ pageX, pageY }] = e.changedTouches
+      const [{ pageX, pageY }] = e.touches
       if (this.scaleMoveStart == 1 && this.currentSwipeIsImage && this.scale2 > 1) {
         e.preventDefault();
         e.stopPropagation();
@@ -385,6 +398,7 @@ export default {
       this.$emit('clear')
       this.endScale2 = 1
       this.scale2 = 1
+      this.scaleMoveStart = 0
     },
     videoFullscreen (status, index) {
       this.$emit('fullscreen', status, index)

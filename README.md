@@ -13,7 +13,7 @@
 
 
 ## 示例
-- ![image](./example.gif) 
+- [查看Demo](https://18679850773.github.io/chenxiaowen.github.io)，`请切换到移动设备查看`
 
 
 ## 安装

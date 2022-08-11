@@ -34,12 +34,12 @@
 </template>
 
 <script>
+import vueMiniPlayer from 'vue-mini-player'
+import 'vue-mini-player/lib/vue-mini-player.css'
+
 export default {
-  install (Vue) {
-    Vue.component(this.name, this);
-  },
   name: 'wen-vant-preview',
-  components: {},
+  components: {'vue-mini-player': vueMiniPlayer.VueMiniPlayer},
   model: {
     prop: "modelValue",
     event: "model-change",
@@ -73,7 +73,7 @@ export default {
       type: Boolean,
       default: false
     },
-    traceability: Object, // 是否开启溯源模式
+    traceability: [], // 是否开启溯源模式
     width: Number, height: Number, vertical: Boolean, stopPropagation: Boolean, lazyRender: Boolean
   },
   data () {

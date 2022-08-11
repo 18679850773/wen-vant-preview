@@ -25,6 +25,19 @@ npm i wen-vant-preview
 
 ## 使用方法
 
+```js
+    // main.js 全局注册
+    import WenVantPreview from 'wen-vant-preview'
+    Vue.use(WenVantPreview)
+
+    // 局部注册
+    import { WenVantPreview } from 'wen-vant-preview'
+    export default {
+        name: 'example',
+        components: { WenVantPreview },
+    }
+```
+
 ``` xml
     <wen-vant-preview v-model="showPreview" :list="previewList" ref="wen-vant-preview" :config="previewConfig" :traceability.sync="traceability">
       <template v-slot="{item, index}">
@@ -46,7 +59,7 @@ npm i wen-vant-preview
 ```
 
 ``` js
-import WenVantPreview from 'wen-vant-preview'
+import {WenVantPreview} from 'wen-vant-preview'
 export default {
   components: { WenVantPreview },
   data () {

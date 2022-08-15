@@ -1,5 +1,5 @@
 <template>
-  <div id="wen-vant-preview" v-if="modelValue" @touchmove="stopPropagations" @touchend="stopPropagations"
+  <div id="wen-vant-preview" v-if="modelValue" @touchmove="stopPropagations" @touchend="stopPropagationsEnd"
     :class="[startTransition&&scale < 0.95&&'start-transition', !enableFullscreen&&'close-fullscreen']"
     :style="{backgroundColor: `rgba(0, 0, 0, ${traceabilityEnd?0:scale-(1-scale)*4})`}">
     <div :style="{transform, transition}" class="wen-vant-preview">
@@ -201,6 +201,12 @@ export default {
     },
     stopPropagations (e) {
       if (this.currentSwipeIsImage) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    },
+    stopPropagationsEnd (e) {
+      if (this.currentSwipeIsImage&&!this.clickClose) {
         e.preventDefault();
         e.stopPropagation();
       }

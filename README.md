@@ -25,6 +25,8 @@ npm i wen-vant-preview
 
 ## 使用方法
 
+- 为了达到最佳效果，确保展示该组件前，下拉刷新、ios回弹等特效是禁用的
+
 ```js
     // main.js 全局注册
     import WenVantPreview from 'wen-vant-preview'

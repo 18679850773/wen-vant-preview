@@ -24,12 +24,12 @@
       </van-swipe>
     </div>
 
-    <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()"
+    <slot name="indicator" v-if="typeof $scopedSlots.indicator=='function'&&$scopedSlots.indicator()&&!traceabilityEnd"
       v-bind="{current}"></slot>
-    <div class="custom-indicator" v-else>{{ current + 1 }} / {{list.length}}</div>
+    <div class="custom-indicator" v-else-if="!traceabilityEnd">{{ current + 1 }} / {{list.length}}</div>
 
-    <slot name="clear" v-if="typeof $scopedSlots.clear=='function'&&$scopedSlots.clear()"></slot>
-    <van-icon name="clear" v-else class="wen-vant-clear" @click="clearSwipe" v-show="clearable" />
+    <slot name="clear" v-if="typeof $scopedSlots.clear=='function'&&$scopedSlots.clear()&&!traceabilityEnd"></slot>
+    <van-icon name="clear" v-else-if="!traceabilityEnd" class="wen-vant-clear" @click="clearSwipe" v-show="clearable" />
   </div>
 </template>
 
@@ -369,7 +369,21 @@ export default {
       }
     },
     swipeClick (e, index) {
-      if (this.clickClose) this.clearSwipe();
+      if (this.clickClose) {
+        if (this.traceability) {
+          this.startTransition = true
+          this.traceabilityEnd = true
+          this.$el.style.animation = 'reverse-preview .35s reverse'
+          this.translateY = 0
+          this.translateX = 0
+          this.scale = 1
+          setTimeout(() => {
+            this.startTransition = false
+            this.traceabilityEnd = false
+            this.clearSwipe();
+          }, 400)
+        } else this.clearSwipe()
+      };
       typeof this.$listeners.click == 'function' && this.$listeners.click(e, index)
     },
     swipeChange (index) {

@@ -243,7 +243,6 @@ export default {
       } else if (this.get2pointDistance([{pageX, pageY}, {pageX: this.startPageX, pageY: this.startPageY}]) < 5 && Date.now() - this.startTouchTime < 300) {
         if (!e.path.some(s => typeof s.className === "string" && s.className.indexOf('vm-player') > -1)) {
             this.swipeClick(e, this.current)
-            return false;
         }
       }
       this.lastTouchTime = Date.now() 

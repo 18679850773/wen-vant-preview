@@ -37,9 +37,13 @@ npm i wen-vant-preview
         components: { WenVantPreview },
         // 为了达到最佳效果，你需要在页面上添加以下代码，阻止下拉回弹的效果
         mounted() {
-            document.body.addEventListener('touchmove', function (e) {
+            this.fun = function (e) {
                 e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
-            }, {passive: false}); //passive 参数不能省略，用来兼容ios和android
+            }
+            document.body.addEventListener('touchmove', this.fun, {passive: false}); //passive 参数不能省略，用来兼容ios和android
+        },
+        destroyed() {
+            document.body.removeEventListener('touchmove', this.fun, false); // 销毁的时候别忘了解绑事件哦
         }
     }
 ```

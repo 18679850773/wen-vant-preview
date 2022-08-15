@@ -25,8 +25,6 @@ npm i wen-vant-preview
 
 ## 使用方法
 
-- 为了达到最佳效果，确保展示该组件前，下拉刷新、ios回弹等特效是禁用的
-
 ```js
     // main.js 全局注册
     import WenVantPreview from 'wen-vant-preview'
@@ -37,6 +35,12 @@ npm i wen-vant-preview
     export default {
         name: 'example',
         components: { WenVantPreview },
+        // 为了达到最佳效果，你需要在页面上添加以下代码，阻止下拉回弹的效果
+        mounted() {
+            document.body.addEventListener('touchmove', function (e) {
+                e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
+            }, {passive: false}); //passive 参数不能省略，用来兼容ios和android
+        }
     }
 ```
 

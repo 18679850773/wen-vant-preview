@@ -5,7 +5,7 @@
     <div :style="{transform, transition}" class="wen-vant-preview">
       <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear"
         :show-indicators="false">
-        <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index" @click="swipeClick($event, index)"
+        <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index"
           @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd">
           <vue-mini-player v-if="computedVideoType(item[_config.type])"
             :ref="'wen-vant-preview-video-'+item.randomString" :video="item.videoData" :mutex="true"
@@ -237,8 +237,14 @@ export default {
       const [{pageX, pageY}] = e.changedTouches
       if (this.get2pointDistance([{pageX, pageY}, {pageX: this.lastTouchX, pageY: this.lastTouchY}]) < 20 && Date.now() - this.lastTouchTime < 300) {
         this.doubleTouch(e)
+        clearTimeout(this.isdb)
         this.scaleMoveStart = 0
         return false;
+      } else if (this.get2pointDistance([{pageX, pageY}, {pageX: this.startPageX, pageY: this.startPageY}]) < 5 && Date.now() - this.startTouchTime < 300) {
+        if (!e.path.some(s => typeof s.className === "string" && s.className.indexOf('vm-player') > -1)) {
+            this.swipeClick(e, this.current)
+            return false;
+        }
       }
       this.lastTouchTime = Date.now() 
       this.lastTouchX = e.changedTouches[0].pageX
@@ -319,6 +325,7 @@ export default {
         const [{ pageX, pageY }] = e.touches
         this.startPageX = pageX
         this.startPageY = pageY
+        this.startTouchTime = Date.now()
       } else if (this.scaleMoveStart == 2 && this.currentSwipeIsImage) {
         this.startDistance = this.get2pointDistance(e.targetTouches)
       }
@@ -369,22 +376,24 @@ export default {
       }
     },
     swipeClick (e, index) {
-      if (this.clickClose) {
-        if (this.traceability) {
-          this.startTransition = true
-          this.traceabilityEnd = true
-          this.$el.style.animation = 'reverse-preview .35s reverse'
-          this.translateY = 0
-          this.translateX = 0
-          this.scale = 1
-          setTimeout(() => {
-            this.startTransition = false
-            this.traceabilityEnd = false
-            this.clearSwipe();
-          }, 400)
-        } else this.clearSwipe()
-      };
-      typeof this.$listeners.click == 'function' && this.$listeners.click(e, index)
+      this.isdb = setTimeout(() => {
+        if (this.clickClose) {
+            if (this.traceability) {
+            this.startTransition = true
+            this.traceabilityEnd = true
+            this.$el.style.animation = 'reverse-preview .35s reverse'
+            this.translateY = 0
+            this.translateX = 0
+            this.scale = 1
+            setTimeout(() => {
+                this.startTransition = false
+                this.traceabilityEnd = false
+                this.clearSwipe();
+            }, 400)
+            } else this.clearSwipe()
+        };
+        typeof this.$listeners.click == 'function' && this.$listeners.click(e, index)
+      }, 300)
     },
     swipeChange (index) {
       this.scaleMoveStart = 0

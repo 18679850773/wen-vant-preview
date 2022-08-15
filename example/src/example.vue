@@ -1,7 +1,7 @@
 <template>
   <div class="example">
     <wen-vant-preview v-model="showPreview" :list="previewList" :config="previewConfig" initial-swipe="1"
-      :autoplay="autoplay" :loop="true" :show-indicators="true" @click="previewClick" @change="previewChange"
+      :autoplay="autoplay" :loop="true" :show-indicators="true" @click="previewClick" @change="previewChange" click-close
       ref="wen-vant-preview" :clearable="false" :enable-fullscreen="false" @clear="previewClear" :traceability.sync="traceability">
       <template v-slot="slotProps">
         <span
@@ -29,8 +29,7 @@
 </template>
 
 <script>
-import './assets/inobounce.min'
-import WenVantPreview from '../components/wen-vant-preview'
+import {WenVantPreview} from '../components/wen-vant-preview'
 
 export default {
   name: 'example',

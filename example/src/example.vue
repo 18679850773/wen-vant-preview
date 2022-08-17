@@ -22,7 +22,7 @@
       </template>
     </wen-vant-preview>
     <van-button type="primary" @click="vantClick($event)">预览测试</van-button>
-    <van-button type="info" @click="vantClick2($event)">预览测试</van-button>
+    <van-button type="info" @click="vantClick2($event)">预览测试1</van-button>
 
     <span class="test-span" :class="reversespan"></span>
   </div>
@@ -48,6 +48,10 @@ export default {
     setTimeout(() => {
         this.reversespan = 'reversespan'
     }, 5000)
+    this.fun = function (e) {
+        e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
+    }
+    document.body.addEventListener('touchmove', this.fun, {passive: false}); //passive 参数不能省略，用来兼容ios和android
   },
   methods: {
     vantClick (event) {
@@ -132,6 +136,7 @@ export default {
   position: absolute;
   top: 200px;
   left: 0;
+  cursor: pointer;
   animation: test-span 1s forwards;
 }
 .reversespan{

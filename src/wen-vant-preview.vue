@@ -6,7 +6,7 @@
       <van-swipe @change="swipeChange" v-bind="$attrs" :ref="'wen-vant-preview-'+refTime" :touchable="!startClear"
         :show-indicators="false">
         <van-swipe-item v-for="(item, index) of list" :key="item[_config.key]||index"
-          @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd">
+          @touchmove="swipeMove" @touchstart="swipeMoveStart" @touchend="swipeMoveEnd" @click="swipeItemClick">
           <vue-mini-player v-if="computedVideoType(item[_config.type])"
             :ref="'wen-vant-preview-video-'+item.randomString" :video="item.videoData" :mutex="true"
             @fullscreen="e=>videoFullscreen(e,index)" :class="videoClass" @videoPlay="e => videoPlay(e,index)"
@@ -126,6 +126,9 @@ export default {
     transition () {
       return this.startTransition ? `transform .4s` : 'none';
     },
+    isiOS () {
+      return !!navigator.userAgent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    }
   },
   watch: {
     list (newVal) {
@@ -233,9 +236,31 @@ export default {
       this.translateImageEndX = this.translateImageX
       this.translateImageEndY = this.translateImageY
     },
+    swipeItemClick(e) {
+        // 处理ios单击、双击事件
+        if (this.scaleMoveStart == 1&&this.isiOS) {
+            if (this.get2pointDistance([{pageX: e.pageX, pageY: e.pageY}, {pageX: this.lastTouchX, pageY: this.lastTouchY}]) < 10 && Date.now() - this.lastTouchTime < 300) {
+                this.doubleTouch({
+                    changedTouches: [{
+                        pageX: e.pageX, pageY: e.pageY
+                    }]
+                })
+                clearTimeout(this.isdb)
+                this.lastTouchTime = 0
+                this.lastTouchX = 0
+                this.lastTouchY = 0
+            } else {
+                this.swipeClick(e, this.current)
+                this.lastTouchTime = Date.now()
+                this.lastTouchX = e.pageX
+                this.lastTouchY = e.pageY
+            }
+        }
+    },
     swipeMoveEnd (e) {
       const [{pageX, pageY}] = e.changedTouches
-      if (this.get2pointDistance([{pageX, pageY}, {pageX: this.lastTouchX, pageY: this.lastTouchY}]) < 20 && Date.now() - this.lastTouchTime < 300) {
+      if (this.isiOS&&this.startPageX==pageX&&this.startPageY==pageY) return false;
+      if (this.get2pointDistance([{pageX, pageY}, {pageX: this.lastTouchX, pageY: this.lastTouchY}]) < 10 && Date.now() - this.lastTouchTime < 300) {
         this.doubleTouch(e)
         clearTimeout(this.isdb)
         this.scaleMoveStart = 0

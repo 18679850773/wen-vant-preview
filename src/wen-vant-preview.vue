@@ -487,6 +487,8 @@ export default {
 #wen-vant-preview {
   width: 100%;
   height: 100%;
+  height: calc(100% + constant(safe-area-inset-bottom));
+  height: calc(100% + env(safe-area-inset-bottom));
   overflow: hidden;
   position: absolute;
   top: 0;

@@ -347,6 +347,11 @@ export default {
       this.scaleMoveStart = e.touches.length;
       if (this.scaleMoveStart == 1) {
         const [{ pageX, pageY }] = e.touches
+        // 如果视频正在预览，并且预测在操作进度条
+        if (this.computedVideoType(this.list[this.current][this._config.type]) && pageY > (window.innerHeight - 48)) {
+          this.scaleMoveStart = 0
+          return false
+        }
         this.startPageX = pageX
         this.startPageY = pageY
         this.startTouchTime = Date.now()

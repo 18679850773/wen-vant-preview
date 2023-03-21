@@ -1,6 +1,6 @@
 {
     "name": "wen-vant-preview",
-    "version": "0.1.20",
+    "version": "0.1.21",
     "description": "基于vant2.x的swipe组件改造，支持视频和图片预览的vant组件（适用移动端）",
     "scripts": {
         "i-all": "npm i & cd example && npm i",
